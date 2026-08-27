@@ -1,0 +1,26 @@
+{
+  // Autor exclusivo deste arquivo: Eduardo Martins Colmati
+  // Configuracao do compilador TypeScript do backend.
+  "compilerOptions": {
+    // Versao de JavaScript gerada. ES2022 e suportada pelo Node.js LTS.
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2022"],
+
+    // Pasta com o codigo fonte e pasta onde o codigo compilado sera gravado.
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // Liga todas as verificacoes de tipo. Ajuda a encontrar erros
+    // antes mesmo de executar o programa.
+    "strict": true,
+
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "sourceMap": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
