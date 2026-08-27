@@ -130,12 +130,15 @@ function verificar(desc, condicao, extra = '') {
   verificar('filtro fica salvo no endereco', p.url().includes('status=ABERTA'));
 
   // busca textual
+  //
+  // A tela nao tem mais o botao "Aplicar filtros": a busca dispara sozinha
+  // 400 milissegundos depois da ultima tecla digitada. Por isso o teste
+  // apenas escreve no campo e espera, sem clicar em nada.
   await p.selectOption('#filtroStatus', '');
   await p.waitForTimeout(700);
   await p.fill('#busca', 'Safari');
-  await p.click('button[type="submit"]');
-  await p.waitForTimeout(900);
-  verificar('busca por texto funciona',
+  await p.waitForTimeout(1200);
+  verificar('busca por texto filtra sozinha, sem clicar em botao',
     (await p.textContent('#resumoDaListagem')).includes('1 demanda'));
 
   // limpar
@@ -143,6 +146,20 @@ function verificar(desc, condicao, extra = '') {
   await p.waitForTimeout(900);
   verificar('botao limpar restaura a lista completa',
     (await p.locator('#corpoDaTabela tr').count()) >= 14);
+
+  // a linha inteira leva aos detalhes, e nao so o texto do titulo
+  await p.click('#corpoDaTabela tr[data-endereco] td[data-rotulo="Status"]');
+  await p.waitForTimeout(1200);
+  verificar('clique em qualquer ponto da linha abre a demanda',
+    p.url().includes('demanda-detalhes'));
+
+  // e o link de voltar devolve a listagem com os filtros de antes
+  const linkDeVoltar = await p.getAttribute('.detalhes-voltar', 'href');
+  verificar('link de voltar preserva os filtros da listagem',
+    linkDeVoltar.includes('ordenarPor='), `(${linkDeVoltar})`);
+
+  await p.goBack();
+  await p.waitForTimeout(1200);
 
   await p.screenshot({ path: 'tela-listagem.png', fullPage: true });
 
@@ -291,7 +308,18 @@ function verificar(desc, condicao, extra = '') {
   await p.waitForTimeout(1800);
   temRolagemHorizontal = await p.evaluate(() =>
     document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
-  verificar('listagem sem rolagem horizontal no celular (tabela rola sozinha)', !temRolagemHorizontal);
+  verificar('listagem sem rolagem horizontal no celular', !temRolagemHorizontal);
+
+  // No celular a tabela vira uma lista de cartoes. Antes so o titulo e o
+  // tipo cabiam na tela e o resto ficava escondido atras de uma rolagem
+  // lateral. O teste confere que as oito informacoes estao visiveis.
+  const celulasVisiveis = await p.$$eval(
+    '#corpoDaTabela tr[data-endereco]:first-child td',
+    (celulas) => celulas.filter((celula) => celula.offsetWidth > 0).length
+  );
+  verificar('celular mostra as 8 informacoes da demanda em formato de cartao',
+    celulasVisiveis === 8, `(${celulasVisiveis})`);
+
   await p.screenshot({ path: 'celular-listagem.png', fullPage: true });
 
   await p.goto(`${BASE}/paginas/demanda-detalhes.html?id=1`);

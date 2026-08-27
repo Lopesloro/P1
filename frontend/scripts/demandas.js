@@ -25,6 +25,10 @@ const corpoDaTabela = document.getElementById('corpoDaTabela');
 const resumoDaListagem = document.getElementById('resumoDaListagem');
 const areaDeMensagemDaListagem = document.getElementById('areaDeMensagem');
 
+/* Nome da chave onde os filtros ficam guardados para a tela de detalhes.
+   O mesmo nome e lido em scripts/demanda-detalhes.js. */
+const CHAVE_DOS_FILTROS_DA_LISTAGEM = 'pi2_filtros_da_listagem';
+
 /** Mostra uma mensagem de erro no topo da tela. */
 function mostrarErroNaListagem(texto) {
   areaDeMensagemDaListagem.textContent = texto;
@@ -68,7 +72,23 @@ function guardarFiltrosNoEndereco(filtros) {
   });
 
   const consulta = parametros.toString();
-  window.history.replaceState(null, '', consulta ? `?${consulta}` : window.location.pathname);
+  const enderecoDaListagem = consulta ? `?${consulta}` : window.location.pathname;
+
+  window.history.replaceState(null, '', enderecoDaListagem);
+
+  /*
+   * Guarda a consulta tambem no sessionStorage.
+   *
+   * Qual problema isso resolve:
+   * o usuario filtrava a lista, abria uma demanda e clicava em "Voltar para
+   * a listagem". A listagem reabria sem nenhum filtro, e ele tinha de
+   * escolher tudo de novo. A tela de detalhes le esta chave e monta o link
+   * de voltar com os mesmos filtros.
+   *
+   * O sessionStorage e apagado ao fechar a aba, que e exatamente o tempo de
+   * vida que faz sentido para uma consulta em andamento.
+   */
+  window.sessionStorage.setItem(CHAVE_DOS_FILTROS_DA_LISTAGEM, consulta);
 }
 
 /** Preenche os filtros da tela com o que estiver no endereco da pagina. */
@@ -84,7 +104,17 @@ function aplicarFiltrosDoEndereco() {
   campoOrdenarPor.value = parametros.get('ordenarPor') || 'prioridade';
 }
 
-/** Desenha uma unica linha da tabela. */
+/**
+ * Desenha uma unica linha da tabela.
+ *
+ * Cada celula recebe o atributo data-rotulo com o nome da sua coluna.
+ * Em telas estreitas a tabela vira uma lista de cartoes, e o CSS usa esse
+ * atributo para escrever o nome da coluna ao lado do valor. Sem isso, no
+ * celular apareceriam valores soltos sem indicacao do que sao.
+ *
+ * A linha inteira guarda o endereco dos detalhes em data-endereco, lido
+ * pelo tratador de clique mais abaixo.
+ */
 function montarLinhaDaTabela(demanda) {
   const enderecoDosDetalhes = `/paginas/demanda-detalhes.html?id=${demanda.id}`;
 
@@ -94,30 +124,78 @@ function montarLinhaDaTabela(demanda) {
     demanda.status !== 'CONCLUIDA' && demanda.status !== 'CANCELADA';
   const aviso = statusPendente ? Formatacao.avisoDePrazo(demanda.prazoFinalizacao) : '';
 
+  const nomeDoResponsavel = demanda.responsavel ? demanda.responsavel.nome : '';
+
   const responsavel = demanda.responsavel
-    ? Formatacao.textoSeguro(demanda.responsavel.nome)
+    ? `<span class="tabela__texto-cortado" title="${Formatacao.textoSeguro(nomeDoResponsavel)}"
+        >${Formatacao.textoSeguro(nomeDoResponsavel)}</span>`
     : '<span class="tabela__sem-responsavel">Sem responsavel</span>';
 
   return `
-    <tr>
+    <tr data-endereco="${enderecoDosDetalhes}" data-prioridade="${Formatacao.textoSeguro(demanda.prioridade)}">
       <td class="tabela__coluna-titulo">
-        <a class="tabela__titulo-demanda" href="${enderecoDosDetalhes}">
+        <a class="tabela__titulo-demanda"
+           href="${enderecoDosDetalhes}"
+           title="${Formatacao.textoSeguro(demanda.titulo)}">
           ${Formatacao.textoSeguro(demanda.titulo)}
         </a>
       </td>
-      <td>${Formatacao.etiquetaTipo(demanda.tipoDescricao)}</td>
-      <td>${Formatacao.etiquetaPrioridade(demanda.prioridade, demanda.prioridadeDescricao)}</td>
-      <td>${Formatacao.etiquetaStatus(demanda.status, demanda.statusDescricao)}</td>
-      <td class="tabela__secundario">${Formatacao.textoSeguro(demanda.projeto.nome)}</td>
-      <td>${responsavel}</td>
-      <td class="tabela__secundario">${Formatacao.formatarData(demanda.criadoEm)}</td>
-      <td>
-        ${Formatacao.formatarData(demanda.prazoFinalizacao)}
-        ${aviso ? `<span class="tabela__prazo-atencao">${aviso}</span>` : ''}
+      <td class="tabela__coluna-tipo" data-rotulo="Tipo">
+        ${Formatacao.etiquetaTipo(demanda.tipoDescricao)}
+      </td>
+      <td class="tabela__coluna-prioridade" data-rotulo="Prioridade">
+        ${Formatacao.etiquetaPrioridade(demanda.prioridade, demanda.prioridadeDescricao)}
+      </td>
+      <td class="tabela__coluna-status" data-rotulo="Status">
+        ${Formatacao.etiquetaStatus(demanda.status, demanda.statusDescricao)}
+      </td>
+      <td class="tabela__coluna-projeto tabela__secundario" data-rotulo="Projeto">
+        <span class="tabela__texto-cortado" title="${Formatacao.textoSeguro(demanda.projeto.nome)}"
+          >${Formatacao.textoSeguro(demanda.projeto.nome)}</span>
+      </td>
+      <td class="tabela__coluna-responsavel" data-rotulo="Responsavel">${responsavel}</td>
+      <td class="tabela__coluna-criacao tabela__secundario" data-rotulo="Criacao">
+        ${Formatacao.formatarData(demanda.criadoEm)}
+      </td>
+      <td class="tabela__coluna-prazo" data-rotulo="Prazo">
+        <span>
+          ${Formatacao.formatarData(demanda.prazoFinalizacao)}
+          ${aviso ? `<span class="tabela__prazo-atencao">${aviso}</span>` : ''}
+        </span>
       </td>
     </tr>
   `;
 }
+
+/**
+ * Monta linhas cinzas no formato da tabela, exibidas durante a consulta.
+ *
+ * Antes esta area mostrava apenas a frase "Carregando as demandas...".
+ * O problema era que a tabela encolhia para uma linha so e voltava a
+ * crescer quando os dados chegavam, fazendo a pagina saltar a cada
+ * filtro aplicado. Desenhando linhas do mesmo tamanho das reais, a altura
+ * da tabela quase nao muda e a troca fica suave.
+ */
+function montarLinhasDeCarregamento(quantidade) {
+  const celulas = Array.from({ length: 8 })
+    .map(() => '<td><span class="esqueleto"></span></td>')
+    .join('');
+
+  return Array.from({ length: quantidade })
+    .map(() => `<tr aria-hidden="true">${celulas}</tr>`)
+    .join('');
+}
+
+/*
+ * Numero da consulta mais recente.
+ *
+ * Como a busca agora dispara sozinha enquanto o usuario digita, duas
+ * consultas podem estar em andamento ao mesmo tempo. Se a primeira
+ * demorar mais que a segunda, ela chegaria depois e sobrescreveria o
+ * resultado certo com um resultado velho. Cada consulta recebe um numero;
+ * quando a resposta chega, so desenha a tela se ainda for a mais recente.
+ */
+let numeroDaConsultaAtual = 0;
 
 /** Busca as demandas na API e desenha a tabela. */
 async function carregarDemandas() {
@@ -126,12 +204,21 @@ async function carregarDemandas() {
   const filtros = lerFiltrosDaTela();
   guardarFiltrosNoEndereco(filtros);
 
-  corpoDaTabela.innerHTML = `
-    <tr><td colspan="8"><div class="aviso-vazio">Carregando as demandas...</div></td></tr>
-  `;
+  numeroDaConsultaAtual += 1;
+  const numeroDestaConsulta = numeroDaConsultaAtual;
+
+  // Mantem a quantidade de linhas atual, para a tabela nao mudar de altura.
+  const linhasVisiveis = corpoDaTabela.querySelectorAll('tr').length;
+  corpoDaTabela.innerHTML = montarLinhasDeCarregamento(Math.min(Math.max(linhasVisiveis, 5), 10));
 
   try {
     const resposta = await Api.listarDemandas(filtros);
+
+    // Chegou uma resposta antiga: outra consulta ja foi disparada depois
+    // desta, entao o resultado dela e que vale.
+    if (numeroDestaConsulta !== numeroDaConsultaAtual) {
+      return;
+    }
 
     resumoDaListagem.textContent =
       resposta.total === 1
@@ -140,7 +227,7 @@ async function carregarDemandas() {
 
     if (resposta.total === 0) {
       corpoDaTabela.innerHTML = `
-        <tr>
+        <tr class="tabela__linha-aviso">
           <td colspan="8">
             <div class="aviso-vazio">
               <p class="aviso-vazio__titulo">Nenhuma demanda encontrada</p>
@@ -154,8 +241,14 @@ async function carregarDemandas() {
 
     corpoDaTabela.innerHTML = resposta.demandas.map(montarLinhaDaTabela).join('');
   } catch (erro) {
+    if (numeroDestaConsulta !== numeroDaConsultaAtual) {
+      return;
+    }
+
     corpoDaTabela.innerHTML = `
-      <tr><td colspan="8"><div class="aviso-vazio">Nao foi possivel carregar a lista.</div></td></tr>
+      <tr class="tabela__linha-aviso">
+        <td colspan="8"><div class="aviso-vazio">Nao foi possivel carregar a lista.</div></td>
+      </tr>
     `;
     resumoDaListagem.textContent = '';
     mostrarErroNaListagem(erro.message);
@@ -200,7 +293,7 @@ async function carregarListasDeFiltro() {
   }
 }
 
-/** Envio do formulario de filtros. */
+/** Envio do formulario, disparado ao apertar Enter dentro da busca. */
 formularioDeFiltros.addEventListener('submit', (evento) => {
   evento.preventDefault();
   carregarDemandas();
@@ -215,11 +308,63 @@ botaoLimparFiltros.addEventListener('click', () => {
 
 /**
  * Recarrega a lista assim que o usuario troca uma caixa de selecao,
- * sem precisar clicar em "Aplicar filtros". A busca por texto continua
- * exigindo o clique, para nao disparar uma consulta a cada letra digitada.
+ * sem precisar clicar em nenhum botao.
  */
 [filtroStatus, filtroPrioridade, filtroTipo, filtroProjeto, filtroResponsavel, campoOrdenarPor]
   .forEach((campo) => campo.addEventListener('change', carregarDemandas));
+
+/**
+ * BUSCA ENQUANTO O USUARIO DIGITA
+ *
+ * Antes, a busca por texto so acontecia ao clicar em "Aplicar filtros".
+ * As caixas de selecao ja filtravam sozinhas, entao a tela se comportava
+ * de dois jeitos diferentes e quem digitava e esperava nao via nada mudar.
+ *
+ * Agora a busca dispara sozinha, mas nao a cada tecla: o temporizador
+ * abaixo espera o usuario parar de digitar por 400 milissegundos antes de
+ * chamar a API. Essa tecnica se chama debounce. Sem ela, digitar uma
+ * palavra de dez letras geraria dez consultas ao banco de dados; com ela,
+ * gera uma so.
+ *
+ * O botao "Aplicar filtros" deixou de ser necessario e foi retirado da
+ * tela. Apertar Enter no campo continua funcionando, para quem prefere.
+ */
+const ESPERA_DA_BUSCA_EM_MILISSEGUNDOS = 400;
+let temporizadorDaBusca = null;
+
+campoBusca.addEventListener('input', () => {
+  window.clearTimeout(temporizadorDaBusca);
+  temporizadorDaBusca = window.setTimeout(carregarDemandas, ESPERA_DA_BUSCA_EM_MILISSEGUNDOS);
+});
+
+/**
+ * CLIQUE EM QUALQUER PONTO DA LINHA
+ *
+ * O ouvinte fica no corpo da tabela, e nao em cada linha. Como as linhas
+ * sao redesenhadas a cada consulta, registrar um ouvinte por linha exigiria
+ * registra-los de novo toda vez. Com um unico ouvinte no elemento pai, o
+ * clique e capturado quando sobe pela arvore. Isso se chama delegacao de
+ * eventos.
+ */
+corpoDaTabela.addEventListener('click', (evento) => {
+  // Cliques em um link ja funcionam sozinhos; nao interferimos neles.
+  if (evento.target.closest('a')) {
+    return;
+  }
+
+  const linha = evento.target.closest('tr[data-endereco]');
+
+  if (!linha) {
+    return;
+  }
+
+  // Quem esta selecionando um texto da linha nao quer navegar.
+  if (window.getSelection().toString()) {
+    return;
+  }
+
+  window.location.href = linha.dataset.endereco;
+});
 
 /** Ponto de partida da tela. */
 (async function iniciarListagem() {

@@ -38,15 +38,83 @@
    COLUNAS DA TABELA
    -------------------------------------------------------------------------- */
 
-/* Impede que um titulo muito longo estique a tabela inteira. */
-.tabela__coluna-titulo {
-  max-width: 320px;
-  min-width: 220px;
+/*
+   LARGURA DE CADA COLUNA
+
+   Qual problema isso resolve:
+   sem largura definida, o navegador distribui o espaco pelo conteudo. Como
+   os nomes completos dos responsaveis sao longos, a coluna Responsavel
+   engolia o espaco da tabela e o titulo da demanda, que e a informacao mais
+   importante, ficava espremido em duas ou tres linhas.
+
+   O table-layout fixed faz o navegador respeitar as larguras abaixo em vez
+   de calcular pelo conteudo. As porcentagens somam 100 e foram distribuidas
+   dando prioridade ao titulo.
+*/
+.tabela {
+  table-layout: fixed;
+}
+
+/* As larguras foram medidas pelo maior conteudo de cada coluna: a coluna
+   Tipo precisa caber a etiqueta "Documentacao", e a coluna Status precisa
+   caber "Em andamento". Projeto e Responsavel podem ser menores porque o
+   texto delas e cortado com reticencias. */
+.tabela__coluna-titulo { width: 22%; }
+.tabela__coluna-tipo { width: 12%; }
+.tabela__coluna-prioridade { width: 10%; }
+.tabela__coluna-status { width: 14%; }
+.tabela__coluna-projeto { width: 12%; }
+.tabela__coluna-responsavel { width: 12%; }
+.tabela__coluna-criacao { width: 8%; }
+.tabela__coluna-prazo { width: 10%; }
+
+/* Com oito colunas, o espacamento interno de 16px consumia largura demais.
+   12px deixa mais espaco para o texto sem apertar a leitura. */
+.tabela thead th,
+.tabela tbody td {
+  padding-left: var(--espaco-3);
+  padding-right: var(--espaco-3);
+}
+
+/*
+   Nomes e projetos longos sao cortados com reticencias em vez de quebrar a
+   linha. O texto completo continua acessivel: o JavaScript o coloca no
+   atributo title, que o navegador mostra ao parar o mouse em cima.
+
+   O display block e obrigatorio: overflow e text-overflow nao tem efeito
+   sobre um elemento inline, e sem ele o nome vazava por cima da coluna
+   vizinha em vez de ser cortado.
+*/
+.tabela__texto-cortado {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* As datas nunca quebram no meio. */
+.tabela__coluna-criacao,
+.tabela__coluna-prazo {
+  white-space: nowrap;
+}
+
+/* O titulo pode ocupar ate duas linhas antes de ser cortado. */
+.tabela__titulo-demanda {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .tabela__sem-responsavel {
+  display: block;
   color: var(--texto-apagado);
   font-style: italic;
+
+  /* Cabe em uma linha so, como os nomes das pessoas ao lado. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Aviso de prazo vencido ou proximo do vencimento. */
@@ -55,11 +123,57 @@
   font-size: var(--texto-pequeno);
   color: var(--cor-erro);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* --------------------------------------------------------------------------
    RESPONSIVIDADE
    -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  /*
+     No formato de cartao nao existem mais colunas, entao as larguras fixas
+     precisam ser desligadas. Sem isto, o titulo continuava preso aos 22%
+     da coluna e cada palavra caia em uma linha, deixando o cartao enorme.
+  */
+  .tabela {
+    table-layout: auto;
+  }
+
+  .tabela__coluna-titulo,
+  .tabela__coluna-tipo,
+  .tabela__coluna-prioridade,
+  .tabela__coluna-status,
+  .tabela__coluna-projeto,
+  .tabela__coluna-responsavel,
+  .tabela__coluna-criacao,
+  .tabela__coluna-prazo {
+    width: auto;
+  }
+
+  /* Dentro do cartao ha espaco de sobra, entao o texto volta ao normal. */
+  .tabela__texto-cortado {
+    display: inline;
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .tabela__coluna-criacao,
+  .tabela__coluna-prazo {
+    white-space: normal;
+  }
+
+  .tabela__sem-responsavel {
+    display: inline;
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .tabela__titulo-demanda {
+    -webkit-line-clamp: none;
+    display: block;
+  }
+}
+
 @media (max-width: 640px) {
   .filtros {
     padding: var(--espaco-4);

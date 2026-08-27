@@ -28,6 +28,19 @@
    de um aviso de problema.
    -------------------------------------------------------------------------- */
 :root {
+  /*
+     Avisa o navegador que o sistema usa tema escuro.
+
+     Qual problema isso resolve:
+     alguns elementos sao desenhados pelo proprio navegador, e nao pelo
+     nosso CSS: a caixa do "Lembrar-me", o calendario do campo de prazo,
+     a lista que abre nas caixas de selecao e as barras de rolagem. Sem
+     esta linha, o navegador os desenha claros, supondo fundo branco, e
+     eles ficavam como manchas brancas no meio das telas escuras.
+     Com color-scheme: dark, o navegador desenha todos eles em tom escuro.
+  */
+  color-scheme: dark;
+
   /* Cores base da paleta */
   --cor-preto: #000000;
   --cor-azul-escuro: #14213d;
@@ -144,6 +157,25 @@ img {
 */
 [hidden] {
   display: none !important;
+}
+
+/*
+   Respeita quem desligou as animacoes no sistema operacional.
+
+   Pessoas com sensibilidade a movimento, como quem tem enxaqueca ou
+   labirintite, podem marcar essa preferencia no proprio computador ou
+   celular. A regra abaixo reduz as animacoes do sistema a quase nada
+   para essas pessoas, sem tirar nada de quem nao ativou a opcao.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 a {

@@ -35,23 +35,46 @@ function mostrarErroNoDashboard(texto) {
 function desenharIndicadores(total, porStatus, descricoesDeStatus) {
   // O primeiro cartao e o total geral; os demais vem da lista de status.
   const cartoes = [
-    { chave: 'total', rotulo: 'Total de demandas', valor: total },
+    { chave: 'total', rotulo: 'Total de demandas', valor: total, status: '' },
     ...Object.keys(porStatus).map((status) => ({
       chave: status.toLowerCase(),
       rotulo: descricoesDeStatus[status],
       valor: porStatus[status],
+      status,
     })),
   ];
 
+  /*
+   * Cada cartao virou um link para a listagem ja filtrada por aquele status.
+   *
+   * Qual problema isso resolve:
+   * o dashboard mostrava, por exemplo, que existem cinco demandas abertas,
+   * mas nao havia como chegar a essas cinco demandas. Era preciso abrir a
+   * listagem e escolher o filtro Status na mao. Agora o caminho e um clique.
+   *
+   * O endereco usa o mesmo nome de parametro que a tela de listagem le
+   * (status), entao ela ja abre com o filtro preenchido.
+   */
   areaDosIndicadores.innerHTML = cartoes
-    .map(
-      (cartao) => `
-        <div class="indicador indicador--${cartao.chave}">
+    .map((cartao) => {
+      const endereco = cartao.status
+        ? `/paginas/demandas.html?status=${cartao.status}`
+        : '/paginas/demandas.html';
+
+      const textoDoLink = cartao.status
+        ? `Ver as demandas com status ${cartao.rotulo}`
+        : 'Ver todas as demandas';
+
+      return `
+        <a class="indicador indicador--${cartao.chave}"
+           href="${endereco}"
+           aria-label="${Formatacao.textoSeguro(textoDoLink)}">
           <div class="indicador__rotulo">${Formatacao.textoSeguro(cartao.rotulo)}</div>
           <div class="indicador__valor">${cartao.valor}</div>
-        </div>
-      `
-    )
+          <span class="indicador__ir">Ver a lista &rarr;</span>
+        </a>
+      `;
+    })
     .join('');
 }
 
@@ -124,7 +147,8 @@ function desenharListaDeDestaque(area, demandas, textoQuandoVazio, mostrarDiasRe
             : 'Sem prazo definido';
 
           return `
-            <li class="lista-destaque__item">
+            <li class="lista-destaque__item"
+                data-endereco="/paginas/demanda-detalhes.html?id=${demanda.id}">
               <div>
                 <a class="lista-destaque__titulo"
                    href="/paginas/demanda-detalhes.html?id=${demanda.id}">
@@ -146,6 +170,33 @@ function desenharListaDeDestaque(area, demandas, textoQuandoVazio, mostrarDiasRe
     </ul>
   `;
 }
+
+/**
+ * Faz a linha inteira das listas de destaque levar aos detalhes.
+ *
+ * O ouvinte fica na area que contem as linhas, e nao em cada linha, porque
+ * elas sao redesenhadas a cada carregamento. Um unico ouvinte no elemento
+ * pai continua valendo depois de qualquer redesenho.
+ */
+function ativarCliqueNaLinha(area) {
+  area.addEventListener('click', (evento) => {
+    // Cliques em um link ja funcionam sozinhos.
+    if (evento.target.closest('a')) {
+      return;
+    }
+
+    const item = evento.target.closest('.lista-destaque__item[data-endereco]');
+
+    if (!item || window.getSelection().toString()) {
+      return;
+    }
+
+    window.location.href = item.dataset.endereco;
+  });
+}
+
+ativarCliqueNaLinha(areaDeCriticas);
+ativarCliqueNaLinha(areaDePrazos);
 
 /** Carrega os dados e desenha a tela. */
 async function carregarDashboard() {

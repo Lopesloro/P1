@@ -350,6 +350,60 @@
   font-size: var(--texto-pequeno);
 }
 
+/*
+   Linha inteira clicavel.
+
+   Antes desta alteracao so o titulo da demanda era um link, e o resto da
+   linha nao respondia ao clique. Quem tentava clicar em cima do status ou
+   do prazo nao ia a lugar nenhum. Agora a linha toda leva aos detalhes,
+   com o cursor de mao avisando que ela e clicavel.
+
+   O link do titulo continua existindo no HTML: ele e quem permite abrir a
+   demanda pelo teclado e em uma nova aba com o botao do meio do mouse.
+*/
+.tabela--linhas-clicaveis tbody tr {
+  cursor: pointer;
+}
+
+.tabela--linhas-clicaveis tbody tr:hover .tabela__titulo-demanda {
+  color: var(--cor-acao);
+}
+
+/* Faixa colorida a esquerda da linha, na cor da prioridade da demanda.
+   Permite localizar as demandas criticas correndo o olho pela tabela,
+   sem precisar ler coluna por coluna. */
+.tabela tbody tr td:first-child {
+  border-left: 3px solid transparent;
+}
+
+.tabela tbody tr[data-prioridade='CRITICA'] td:first-child {
+  border-left-color: var(--cor-erro);
+}
+
+.tabela tbody tr[data-prioridade='ALTA'] td:first-child {
+  border-left-color: #ff9f45;
+}
+
+.tabela tbody tr[data-prioridade='MEDIA'] td:first-child {
+  border-left-color: #f2d16b;
+}
+
+/* Linhas de carregamento cinzas, exibidas enquanto a consulta acontece.
+   Mostrar o formato da tabela desde o inicio evita que a tela pisque e
+   pule de tamanho quando os dados chegam. */
+.esqueleto {
+  display: block;
+  height: 12px;
+  border-radius: 999px;
+  background-color: var(--borda);
+  animation: esqueleto-pulsando 1.2s ease-in-out infinite;
+}
+
+@keyframes esqueleto-pulsando {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.9; }
+}
+
 /* --------------------------------------------------------------------------
    MENSAGENS DE AVISO
 
@@ -405,6 +459,144 @@
 /* --------------------------------------------------------------------------
    RESPONSIVIDADE DOS COMPONENTES
    -------------------------------------------------------------------------- */
+
+/*
+   TABELA EM FORMATO DE CARTAO NO CELULAR E NO TABLET
+
+   Qual problema isso resolve:
+   a tabela tem oito colunas e nao cabe em uma tela de celular. Antes desta
+   alteracao ela ficava dentro de uma area com rolagem horizontal, e o que
+   aparecia era apenas o titulo e o tipo. Para descobrir o status ou o prazo
+   de uma demanda era preciso arrastar a tabela para o lado, linha por linha.
+   Na pratica, a informacao mais importante ficava escondida.
+
+   Como funciona agora:
+   abaixo de 900 pixels a tabela deixa de se comportar como tabela. Cada
+   linha vira um cartao e cada celula vira uma linha do cartao, com o nome
+   da coluna escrito ao lado do valor. O nome vem do atributo data-rotulo,
+   preenchido pelo JavaScript ao montar a tabela.
+
+   O cabecalho da tabela e escondido porque cada celula ja carrega o proprio
+   rotulo. A marcacao continua sendo uma tabela de verdade no HTML, entao os
+   leitores de tela continuam entendendo a relacao entre coluna e valor.
+*/
+@media (max-width: 900px) {
+  .tabela-area {
+    /* Sem tabela larga, nao ha mais o que rolar para o lado. */
+    overflow-x: visible;
+    border: none;
+    background-color: transparent;
+  }
+
+  .tabela {
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .tabela thead {
+    /* Esconde o cabecalho sem tirar a tabela do fluxo de acessibilidade. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .tabela tbody tr {
+    display: block;
+
+    background-color: var(--fundo-superficie);
+    border: 1px solid var(--borda);
+    border-radius: var(--canto-medio);
+    padding: var(--espaco-3) var(--espaco-4);
+    margin-bottom: var(--espaco-3);
+  }
+
+  .tabela tbody tr:hover {
+    border-color: var(--borda-clara);
+  }
+
+  .tabela tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espaco-4);
+
+    padding: var(--espaco-2) 0;
+    border-bottom: 1px dashed var(--borda);
+    text-align: right;
+  }
+
+  /* Escreve o nome da coluna a esquerda do valor. */
+  .tabela tbody td::before {
+    content: attr(data-rotulo);
+
+    font-size: var(--texto-pequeno);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--texto-secundario);
+
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  /* O titulo da demanda ocupa a linha inteira, como se fosse o nome do cartao. */
+  .tabela tbody td.tabela__coluna-titulo {
+    display: block;
+    max-width: none;
+    text-align: left;
+    padding-top: 0;
+    padding-bottom: var(--espaco-3);
+    border-left: none;
+  }
+
+  .tabela tbody td.tabela__coluna-titulo::before {
+    display: none;
+  }
+
+  .tabela tbody td.tabela__coluna-titulo .tabela__titulo-demanda {
+    font-size: var(--texto-medio);
+  }
+
+  .tabela tbody tr td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  /* A faixa de prioridade passa a ser a borda esquerda do cartao inteiro. */
+  .tabela tbody tr[data-prioridade='CRITICA'] {
+    border-left: 3px solid var(--cor-erro);
+  }
+
+  .tabela tbody tr[data-prioridade='ALTA'] {
+    border-left: 3px solid #ff9f45;
+  }
+
+  .tabela tbody tr[data-prioridade='MEDIA'] {
+    border-left: 3px solid #f2d16b;
+  }
+
+  /* A linha de aviso, como "nenhuma demanda encontrada", nao vira cartao. */
+  .tabela tbody tr.tabela__linha-aviso {
+    padding: 0;
+    border-left: none;
+  }
+
+  .tabela tbody tr.tabela__linha-aviso td {
+    display: block;
+    text-align: center;
+    border-bottom: none;
+    padding: 0;
+  }
+
+  .tabela tbody tr.tabela__linha-aviso td::before {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
   /* Campos lado a lado passam a ocupar uma linha cada. */
   .campo-linha {

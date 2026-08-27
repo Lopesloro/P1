@@ -22,6 +22,28 @@ const erroComentario = document.getElementById('erroComentario');
 // Codigo da demanda, lido do endereco: /paginas/demanda-detalhes.html?id=12
 const codigoDaDemanda = new URLSearchParams(window.location.search).get('id');
 
+/**
+ * Faz o link "Voltar para a listagem" devolver o usuario a mesma consulta
+ * que ele estava vendo.
+ *
+ * Qual problema isso resolve:
+ * quem filtrava a lista por "Criticas em andamento", abria uma demanda e
+ * clicava em voltar, caia na lista completa e precisava refazer os filtros.
+ * A tela de listagem guarda a consulta no sessionStorage a cada busca, e a
+ * chave lida aqui e a mesma escrita la, em scripts/demandas.js.
+ */
+function ajustarLinkDeVoltar() {
+  const filtrosGuardados = window.sessionStorage.getItem('pi2_filtros_da_listagem');
+  const link = document.querySelector('.detalhes-voltar');
+
+  if (!link || !filtrosGuardados) {
+    return;
+  }
+
+  link.href = `/paginas/demandas.html?${filtrosGuardados}`;
+  link.textContent = 'Voltar para a listagem filtrada';
+}
+
 /** Mostra uma mensagem no topo da tela. */
 function mostrarMensagemNosDetalhes(texto, tipo = 'erro') {
   areaDeMensagemDosDetalhes.textContent = texto;
@@ -350,6 +372,7 @@ formularioDeComentario.addEventListener('submit', async (evento) => {
   }
 
   Sessao.montarCabecalho(usuario, 'demandas');
+  ajustarLinkDeVoltar();
 
   // Sem o codigo da demanda no endereco nao ha o que mostrar.
   if (!codigoDaDemanda) {

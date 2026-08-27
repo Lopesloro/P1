@@ -26,6 +26,64 @@
 
   /* Faixa colorida na lateral esquerda, que muda conforme o status. */
   border-left: 3px solid var(--borda-clara);
+
+  /*
+     Os cartoes agora sao links para a listagem ja filtrada. As tres regras
+     abaixo desfazem a aparencia padrao de link e mantem o cartao com o
+     mesmo desenho de antes.
+  */
+  display: block;
+  color: inherit;
+  text-decoration: none;
+
+  transition: transform 0.15s ease, border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+/*
+   Resposta ao passar o mouse.
+
+   Antes, os cartoes de total eram apenas numeros parados: para ver as
+   demandas de um status era preciso ir ate a listagem e escolher o filtro
+   na mao. Agora cada cartao leva direto a lista daquele status, e o
+   pequeno deslocamento para cima avisa que o cartao e clicavel.
+*/
+.indicador:hover {
+  background-color: var(--fundo-superficie-alta);
+  border-color: var(--borda-clara);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+/* Mantem a cor da faixa lateral quando o mouse passa por cima. */
+.indicador--total:hover { border-left-color: var(--cor-acao); }
+.indicador--aberta:hover { border-left-color: #6ba8ff; }
+.indicador--em_andamento:hover { border-left-color: var(--cor-acao); }
+.indicador--em_revisao:hover { border-left-color: #c58cff; }
+.indicador--concluida:hover { border-left-color: var(--cor-sucesso); }
+.indicador--cancelada:hover { border-left-color: var(--texto-apagado); }
+
+/*
+   Convite discreto no rodape do cartao.
+
+   Fica sempre visivel, em cinza, porque e ele que avisa que o cartao leva
+   a algum lugar. Se so aparecesse ao passar o mouse, quem nunca passasse o
+   mouse por cima nao descobriria o atalho, e no celular nao ha mouse.
+   Ao passar o mouse ele ganha a cor de acao.
+*/
+.indicador__ir {
+  display: block;
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+  color: var(--texto-apagado);
+  margin-top: var(--espaco-2);
+
+  transition: color 0.15s ease;
+}
+
+.indicador:hover .indicador__ir,
+.indicador:focus-visible .indicador__ir {
+  color: var(--cor-acao);
 }
 
 .indicador__rotulo {
@@ -150,6 +208,27 @@
 
   padding: var(--espaco-3) 0;
   border-bottom: 1px solid var(--borda);
+
+  /* A linha inteira leva aos detalhes, nao apenas o texto do titulo. */
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+/*
+   O recuo negativo faz o realce do mouse avancar ate a borda do card,
+   em vez de parar na largura do texto. Sem ele, a faixa clara ficaria
+   flutuando no meio do card, com uma margem estranha dos dois lados.
+*/
+.lista-destaque__item:hover {
+  background-color: var(--fundo-superficie-alta);
+  margin: 0 calc(var(--espaco-4) * -1);
+  padding-left: var(--espaco-4);
+  padding-right: var(--espaco-4);
+  border-radius: var(--canto-pequeno);
+}
+
+.lista-destaque__item:hover .lista-destaque__titulo {
+  color: var(--cor-acao);
 }
 
 .lista-destaque__item:last-child {
