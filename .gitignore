@@ -31,3 +31,9 @@ Thumbs.db
 # Pastas de configuracao pessoal dos editores.
 .vscode/
 .idea/
+
+# Capturas de tela geradas pelo teste testes/testar-telas.js a cada
+# execucao. Servem para conferir o resultado na hora, nao para o
+# repositorio.
+tela-*.png
+celular-*.png

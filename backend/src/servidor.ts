@@ -64,7 +64,12 @@ aplicacao.use(tratarErros);
 async function iniciarServidor(): Promise<void> {
   try {
     await testarConexaoBanco();
-    console.log('[banco] Conexao com o MySQL estabelecida.');
+
+    console.log(
+      ambiente.modoDemonstracao
+        ? '[banco] Banco de demonstracao criado na memoria, sem MySQL.'
+        : '[banco] Conexao com o MySQL estabelecida.'
+    );
   } catch (erro) {
     console.error('[banco] Nao foi possivel conectar ao MySQL.');
     console.error('Confira os dados do arquivo .env e se o servico do MySQL esta ligado.');

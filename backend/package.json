@@ -5,6 +5,7 @@
   "main": "dist/servidor.js",
   "scripts": {
     "dev": "tsx watch src/servidor.ts",
+    "demo": "tsx src/servidorDemonstracao.ts",
     "build": "tsc",
     "start": "node dist/servidor.js",
     "verificar-tipos": "tsc --noEmit"

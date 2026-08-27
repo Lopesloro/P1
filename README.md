@@ -124,6 +124,53 @@ npm -v
 
 ---
 
+## 4.1 Atalho para so ver o sistema funcionando (sem MySQL)
+
+Se a intencao e apenas abrir as telas e navegar pelo sistema, sem instalar
+nem configurar banco de dados, existe um modo de demonstracao.
+
+A partir da pasta raiz do projeto:
+
+```
+cd backend
+npm install
+npm run demo
+```
+
+Abra `http://localhost:3000` e entre com qualquer usuario da secao 6
+(por exemplo `eduardo@time11.com` / `admin123`).
+
+Nao precisa de MySQL, nao precisa rodar os scripts da pasta `banco/` e
+nao precisa criar o arquivo `.env`.
+
+### Como funciona
+
+O sistema sobe com um banco SQLite criado dentro da propria memoria do
+programa, usando os mesmos scripts da pasta `banco/` para montar as
+tabelas e inserir os dados de exemplo. O SQLite ja vem junto com o
+Node.js, entao nada e instalado.
+
+As telas, as rotas, os controladores, as regras de transicao de status,
+as permissoes por perfil e a consulta de feriados sao exatamente os
+mesmos do modo normal. A unica peca trocada e o banco embaixo deles.
+
+### Limitacoes
+
+- Como os dados ficam na memoria, tudo o que for cadastrado se perde ao
+  desligar o servidor. A cada `npm run demo` o banco volta ao estado
+  inicial.
+- Exige Node.js 22.5 ou superior, que e quando o SQLite passou a vir
+  embutido. Em uma versao anterior o comando avisa e nao sobe.
+
+Este modo serve para ver, testar e avaliar o sistema. A entrega final e o
+uso de verdade continuam sendo com MySQL, pelo `npm run dev`, seguindo os
+passos abaixo.
+
+O codigo desse modo esta em `backend/src/servidorDemonstracao.ts` e
+`backend/src/configuracao/bancoDemonstracao.ts`.
+
+---
+
 ## 5. Instalacao passo a passo
 
 ### Passo 1 - Baixar o projeto

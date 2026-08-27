@@ -34,6 +34,13 @@ function lerObrigatoria(nome: string): string {
 }
 
 /**
+ * Diz se o sistema esta rodando no modo de demonstracao, com o banco em
+ * memoria em vez do MySQL. Quem liga essa chave e o arquivo
+ * src/servidorDemonstracao.ts, executado por `npm run demo`.
+ */
+const modoDemonstracao = process.env.MODO_DEMONSTRACAO === '1';
+
+/**
  * Busca uma variavel de ambiente opcional, devolvendo um valor padrao
  * quando ela nao foi preenchida.
  */
@@ -46,17 +53,35 @@ export const ambiente = {
   // Porta em que a API vai responder.
   porta: Number(lerOpcional('PORTA', '3000')),
 
+  // Verdadeiro quando o sistema roda sem MySQL, com o banco em memoria.
+  modoDemonstracao,
+
   banco: {
     host: lerOpcional('BANCO_HOST', 'localhost'),
     porta: Number(lerOpcional('BANCO_PORTA', '3306')),
-    usuario: lerObrigatoria('BANCO_USUARIO'),
+
+    /*
+     * No modo de demonstracao nao existe MySQL, entao nao ha usuario nem
+     * senha de banco a exigir. Fora dele o usuario continua obrigatorio:
+     * e melhor o sistema parar na hora, com uma mensagem clara, do que
+     * subir e falhar na primeira consulta.
+     */
+    usuario: modoDemonstracao ? '' : lerObrigatoria('BANCO_USUARIO'),
     senha: lerOpcional('BANCO_SENHA', ''),
     nome: lerOpcional('BANCO_NOME', 'acompanhamento_demandas'),
   },
 
-  // Chave usada para assinar o token de login.
-  // Precisa ser um texto longo e secreto.
-  chaveSecretaToken: lerObrigatoria('CHAVE_SECRETA_TOKEN'),
+  /*
+   * Chave usada para assinar o token de login. Precisa ser um texto longo
+   * e secreto.
+   *
+   * O modo de demonstracao aceita uma chave fixa porque nao ha nada a
+   * proteger: o banco vive na memoria, so tem dados de exemplo e some
+   * quando o servidor e desligado. Fora dele a chave continua obrigatoria.
+   */
+  chaveSecretaToken: modoDemonstracao
+    ? 'chave-do-modo-de-demonstracao-sem-valor-de-seguranca'
+    : lerObrigatoria('CHAVE_SECRETA_TOKEN'),
 
   // Por quanto tempo o token de login continua valido.
   validadeToken: lerOpcional('VALIDADE_TOKEN', '8h'),
