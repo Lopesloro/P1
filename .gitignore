@@ -1,0 +1,33 @@
+# =============================================================================
+# Autor exclusivo deste arquivo: Gabriel Lopes Londe Rodrigues
+# Projeto Integrador II - PI-II-TIME-11
+#
+# Lista de arquivos e pastas que NAO devem ser enviados ao GitHub.
+# =============================================================================
+
+# Bibliotecas instaladas pelo npm.
+# Elas sao reinstaladas com "npm install" e ocupariam centenas de megabytes
+# no repositorio.
+node_modules/
+
+# Arquivos de configuracao com senhas e chaves secretas.
+# O modelo sem dados reais fica em backend/.env.example.
+.env
+.env.local
+*.env
+
+# Codigo TypeScript compilado.
+dist/
+build/
+
+# Arquivos de registro (log).
+*.log
+npm-debug.log*
+
+# Arquivos criados automaticamente pelo sistema operacional.
+.DS_Store
+Thumbs.db
+
+# Pastas de configuracao pessoal dos editores.
+.vscode/
+.idea/
