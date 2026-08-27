@@ -1,0 +1,289 @@
+/* ==========================================================================
+   Autor exclusivo deste arquivo: Gabriel Lopes Londe Rodrigues
+   Projeto Integrador II - PI-II-TIME-11
+
+   Estilos exclusivos da tela de Detalhes da Demanda.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CABECALHO DA DEMANDA
+   -------------------------------------------------------------------------- */
+.detalhes-titulo-area {
+  /* Impede que um titulo longo empurre o botao de editar para fora. */
+  max-width: 720px;
+}
+
+.detalhes-voltar {
+  display: inline-block;
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+  color: var(--texto-secundario);
+  margin-bottom: var(--espaco-2);
+}
+
+.detalhes-voltar:hover {
+  color: var(--cor-acao);
+  text-decoration: none;
+}
+
+.detalhes-etiquetas {
+  display: flex;
+  gap: var(--espaco-2);
+  flex-wrap: wrap;
+  margin-top: var(--espaco-3);
+}
+
+/* --------------------------------------------------------------------------
+   DUAS COLUNAS: CONTEUDO PRINCIPAL E BARRA LATERAL
+   -------------------------------------------------------------------------- */
+.detalhes-colunas {
+  display: grid;
+
+  /* A coluna principal cresce; a lateral fica com largura fixa. */
+  grid-template-columns: 1fr 340px;
+  gap: var(--espaco-5);
+  align-items: start;
+}
+
+/* --------------------------------------------------------------------------
+   DESCRICAO
+   -------------------------------------------------------------------------- */
+.detalhes-descricao {
+  color: var(--texto-principal);
+  line-height: 1.7;
+
+  /* Respeita as quebras de linha digitadas pelo usuario. */
+  white-space: pre-wrap;
+
+  /* Quebra palavras muito longas, como um endereco de site colado
+     na descricao, em vez de estourar a largura do card. */
+  overflow-wrap: anywhere;
+}
+
+.detalhes-ajuda {
+  color: var(--texto-secundario);
+  font-size: var(--texto-pequeno);
+  margin-bottom: var(--espaco-3);
+}
+
+/* --------------------------------------------------------------------------
+   BOTOES DE MUDANCA DE STATUS
+   -------------------------------------------------------------------------- */
+.detalhes-acoes {
+  display: flex;
+  gap: var(--espaco-3);
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   FICHA COM OS DADOS DA DEMANDA
+
+   Usa <dl>, <dt> e <dd>, que sao as marcacoes proprias do HTML para
+   pares de "nome do dado" e "valor do dado".
+   -------------------------------------------------------------------------- */
+.detalhes-ficha {
+  display: grid;
+  gap: var(--espaco-3);
+}
+
+.detalhes-ficha__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--espaco-3);
+
+  padding-bottom: var(--espaco-3);
+  border-bottom: 1px solid var(--borda);
+}
+
+.detalhes-ficha__item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.detalhes-ficha__rotulo {
+  color: var(--texto-secundario);
+  font-size: var(--texto-pequeno);
+  white-space: nowrap;
+}
+
+.detalhes-ficha__valor {
+  text-align: right;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.detalhes-ficha__valor--vazio {
+  color: var(--texto-apagado);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.detalhes-ficha__valor--atencao {
+  color: var(--cor-erro);
+}
+
+/* --------------------------------------------------------------------------
+   COMENTARIOS
+   -------------------------------------------------------------------------- */
+.detalhes-area-comentario {
+  min-height: 92px;
+}
+
+.detalhes-contador {
+  color: var(--texto-secundario);
+  font-weight: 400;
+  font-size: var(--texto-normal);
+}
+
+.detalhes-lista-comentarios {
+  margin-top: var(--espaco-5);
+  display: grid;
+  gap: var(--espaco-4);
+}
+
+.comentario {
+  display: flex;
+  gap: var(--espaco-3);
+}
+
+/* Circulo com a inicial de quem escreveu. */
+.comentario__inicial {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  background-color: var(--fundo-superficie-alta);
+  border: 1px solid var(--borda-clara);
+  color: var(--texto-secundario);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+  font-size: var(--texto-pequeno);
+}
+
+.comentario__conteudo {
+  flex: 1;
+
+  /* Sem isso um texto longo sem espacos empurraria o layout. */
+  min-width: 0;
+}
+
+.comentario__topo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--espaco-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--espaco-1);
+}
+
+.comentario__autor {
+  font-weight: 600;
+}
+
+.comentario__data {
+  font-size: var(--texto-pequeno);
+  color: var(--texto-apagado);
+}
+
+.comentario__texto {
+  color: var(--texto-secundario);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* --------------------------------------------------------------------------
+   HISTORICO DE ALTERACOES
+
+   Apresentado como uma linha do tempo: uma barra vertical a esquerda e
+   um ponto marcando cada alteracao.
+   -------------------------------------------------------------------------- */
+.historico {
+  list-style: none;
+  position: relative;
+
+  /* Espaco a esquerda para a linha do tempo e os pontos. */
+  padding-left: var(--espaco-4);
+}
+
+/* A linha vertical continua da linha do tempo. */
+.historico::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background-color: var(--borda);
+}
+
+.historico__item {
+  position: relative;
+  padding-bottom: var(--espaco-4);
+}
+
+.historico__item:last-child {
+  padding-bottom: 0;
+}
+
+/* O ponto de cada alteracao, sobre a linha vertical. */
+.historico__item::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--espaco-4) + 1px);
+  top: 6px;
+
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--cor-acao);
+}
+
+.historico__descricao {
+  font-size: var(--texto-normal);
+  line-height: 1.5;
+}
+
+.historico__valor {
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+.historico__rodape {
+  font-size: var(--texto-pequeno);
+  color: var(--texto-apagado);
+  margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVIDADE
+   -------------------------------------------------------------------------- */
+
+/* Em tablets e telas menores, a barra lateral desce para baixo do
+   conteudo principal, ocupando a largura toda. */
+@media (max-width: 1000px) {
+  .detalhes-colunas {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .detalhes-acoes {
+    flex-direction: column;
+  }
+
+  /* Na ficha, rotulo e valor ficam um sobre o outro. */
+  .detalhes-ficha__item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .detalhes-ficha__valor {
+    text-align: left;
+  }
+}

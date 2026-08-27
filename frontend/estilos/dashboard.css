@@ -1,0 +1,234 @@
+/* ==========================================================================
+   Autor exclusivo deste arquivo: Jose Gabriel Bedani
+   Projeto Integrador II - PI-II-TIME-11
+
+   Estilos exclusivos da tela de Dashboard.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CARTOES DE INDICADORES
+
+   Usamos grid com auto-fit: o navegador encaixa quantos cartoes couberem
+   na largura disponivel e quebra os demais para a linha seguinte, sem
+   precisarmos escrever uma regra para cada tamanho de tela.
+   -------------------------------------------------------------------------- */
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+  gap: var(--espaco-4);
+}
+
+.indicador {
+  background-color: var(--fundo-superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--canto-medio);
+  padding: var(--espaco-4);
+
+  /* Faixa colorida na lateral esquerda, que muda conforme o status. */
+  border-left: 3px solid var(--borda-clara);
+}
+
+.indicador__rotulo {
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--texto-secundario);
+}
+
+.indicador__valor {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-top: var(--espaco-2);
+}
+
+/* Cor da faixa lateral e do numero, por status. */
+.indicador--total {
+  border-left-color: var(--cor-acao);
+}
+.indicador--total .indicador__valor {
+  color: var(--cor-acao);
+}
+
+.indicador--aberta {
+  border-left-color: #6ba8ff;
+}
+.indicador--em_andamento {
+  border-left-color: var(--cor-acao);
+}
+.indicador--em_revisao {
+  border-left-color: #c58cff;
+}
+.indicador--concluida {
+  border-left-color: var(--cor-sucesso);
+}
+.indicador--cancelada {
+  border-left-color: var(--texto-apagado);
+}
+
+/* --------------------------------------------------------------------------
+   DUAS COLUNAS: PRIORIDADE E TIPO
+   -------------------------------------------------------------------------- */
+.dashboard-colunas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-4);
+}
+
+/* --------------------------------------------------------------------------
+   BARRAS DE DISTRIBUICAO
+
+   Cada linha mostra o nome, uma barra proporcional e o numero.
+   A largura da barra e calculada no JavaScript e aplicada na propria
+   linha do elemento, porque o valor muda a cada carregamento.
+   -------------------------------------------------------------------------- */
+.barra-linha {
+  display: grid;
+  grid-template-columns: 110px 1fr 40px;
+  align-items: center;
+  gap: var(--espaco-3);
+
+  padding: var(--espaco-2) 0;
+}
+
+.barra-linha__nome {
+  font-size: var(--texto-normal);
+  color: var(--texto-secundario);
+}
+
+.barra-linha__trilho {
+  height: 9px;
+  background-color: var(--fundo-campo);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barra-linha__preenchimento {
+  height: 100%;
+  border-radius: 999px;
+  background-color: var(--cor-acao);
+
+  /* Anima o crescimento da barra quando a pagina carrega. */
+  transition: width 0.4s ease;
+}
+
+.barra-linha__valor {
+  text-align: right;
+  font-weight: 700;
+  font-size: var(--texto-normal);
+}
+
+/* Cores das barras por prioridade */
+.barra-linha__preenchimento--critica {
+  background-color: var(--cor-erro);
+}
+.barra-linha__preenchimento--alta {
+  background-color: #ff9f45;
+}
+.barra-linha__preenchimento--media {
+  background-color: #f2d16b;
+}
+.barra-linha__preenchimento--baixa {
+  background-color: var(--texto-secundario);
+}
+
+/* --------------------------------------------------------------------------
+   LISTAS DE DEMANDAS EM DESTAQUE
+   (criticas em aberto e proximas do prazo)
+   -------------------------------------------------------------------------- */
+.lista-destaque {
+  list-style: none;
+}
+
+.lista-destaque__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-4);
+  flex-wrap: wrap;
+
+  padding: var(--espaco-3) 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.lista-destaque__item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.lista-destaque__item:first-child {
+  padding-top: 0;
+}
+
+.lista-destaque__titulo {
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+.lista-destaque__titulo:hover {
+  color: var(--cor-acao);
+}
+
+.lista-destaque__projeto {
+  font-size: var(--texto-pequeno);
+  color: var(--texto-secundario);
+  margin-top: 2px;
+}
+
+.lista-destaque__direita {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  flex-wrap: wrap;
+}
+
+.lista-destaque__prazo {
+  font-size: var(--texto-pequeno);
+  color: var(--texto-secundario);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Destaque para prazo vencido ou vencendo. */
+.lista-destaque__prazo--atencao {
+  color: var(--cor-erro);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVIDADE
+   -------------------------------------------------------------------------- */
+@media (max-width: 820px) {
+  /* As duas colunas viram uma so. */
+  .dashboard-colunas {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .indicadores {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--espaco-3);
+  }
+
+  .indicador__valor {
+    font-size: 1.6rem;
+  }
+
+  .barra-linha {
+    grid-template-columns: 90px 1fr 34px;
+    gap: var(--espaco-2);
+  }
+
+  /* No celular o item da lista se organiza em duas linhas. */
+  .lista-destaque__item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--espaco-2);
+  }
+
+  .lista-destaque__prazo {
+    text-align: left;
+  }
+}

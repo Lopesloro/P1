@@ -1,0 +1,141 @@
+<!--
+  Autor exclusivo deste arquivo: Gabriel Lopes Londe Rodrigues
+  Projeto Integrador II - PI-II-TIME-11
+
+  Tela de Detalhes da Demanda.
+
+  Mostra todas as informacoes de uma demanda e reune, em um unico lugar,
+  as acoes possiveis sobre ela: mudar o status, cancelar, editar e
+  registrar comentarios. Tambem apresenta o historico de alteracoes.
+
+  Os botoes de acao que aparecem dependem do status atual da demanda e do
+  perfil do usuario logado. Quem decide isso e o backend, que envia a
+  lista de acoes permitidas junto com os dados da demanda.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Detalhes da Demanda | Acompanhamento de Demandas</title>
+
+    <!-- Icone da aba do navegador -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="stylesheet" href="/estilos/base.css" />
+    <link rel="stylesheet" href="/estilos/componentes.css" />
+    <link rel="stylesheet" href="/estilos/detalhes.css" />
+  </head>
+
+  <body>
+    <div id="cabecalho"></div>
+
+    <main class="pagina">
+      <div
+        id="areaDeMensagem"
+        class="mensagem mensagem--erro mensagem--escondida"
+        role="alert"
+      ></div>
+
+      <p class="aviso-vazio" id="avisoCarregando">Carregando a demanda...</p>
+
+      <div id="conteudoDaDemanda" hidden>
+        <!-- ---------------------------------------------------------------
+             CABECALHO DA DEMANDA
+             --------------------------------------------------------------- -->
+        <div class="pagina__topo">
+          <div class="detalhes-titulo-area">
+            <a class="detalhes-voltar" href="/paginas/demandas.html">
+              Voltar para a listagem
+            </a>
+
+            <h1 class="pagina__titulo" id="tituloDaDemanda"></h1>
+
+            <div class="detalhes-etiquetas" id="etiquetasDaDemanda"></div>
+          </div>
+
+          <!-- Botao de editar, exibido apenas quando o perfil permite -->
+          <a class="botao botao--secundario" id="botaoEditar" href="#" hidden>
+            Editar demanda
+          </a>
+        </div>
+
+        <div class="detalhes-colunas">
+          <!-- =========================================================
+               COLUNA PRINCIPAL: descricao, acoes e comentarios
+               ========================================================= -->
+          <div>
+            <!-- Descricao -->
+            <section class="card">
+              <h2 class="card__titulo">Descricao</h2>
+              <p class="detalhes-descricao" id="descricaoDaDemanda"></p>
+            </section>
+
+            <!-- Acoes de mudanca de status -->
+            <section class="card secao" id="areaDeAcoes" hidden>
+              <h2 class="card__titulo">Atualizar andamento</h2>
+              <p class="detalhes-ajuda" id="ajudaDasAcoes"></p>
+              <div class="detalhes-acoes" id="botoesDeStatus"></div>
+            </section>
+
+            <!-- Comentarios -->
+            <section class="card secao">
+              <h2 class="card__titulo">
+                Comentarios <span class="detalhes-contador" id="contadorDeComentarios"></span>
+              </h2>
+
+              <!-- Formulario de novo comentario -->
+              <form id="formularioDeComentario">
+                <div class="campo">
+                  <label class="campo__rotulo" for="textoDoComentario">
+                    Escrever um comentario
+                  </label>
+                  <textarea
+                    class="campo__area detalhes-area-comentario"
+                    id="textoDoComentario"
+                    maxlength="2000"
+                    placeholder="Registre uma duvida, uma observacao ou uma atualizacao sobre o andamento"
+                  ></textarea>
+                  <p class="campo__erro" id="erroComentario"></p>
+                </div>
+
+                <button
+                  type="submit"
+                  class="botao botao--principal botao--empilha-no-celular"
+                  id="botaoComentar"
+                >
+                  Enviar comentario
+                </button>
+              </form>
+
+              <div class="detalhes-lista-comentarios" id="listaDeComentarios"></div>
+            </section>
+          </div>
+
+          <!-- =========================================================
+               COLUNA LATERAL: dados e historico
+               ========================================================= -->
+          <aside>
+            <!-- Ficha com os dados da demanda -->
+            <section class="card">
+              <h2 class="card__titulo">Informacoes</h2>
+              <dl class="detalhes-ficha" id="fichaDaDemanda"></dl>
+            </section>
+
+            <!-- Historico de alteracoes -->
+            <section class="card secao">
+              <h2 class="card__titulo">Historico de alteracoes</h2>
+              <div id="listaDoHistorico"></div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <script src="/scripts/formatacao.js"></script>
+    <script src="/scripts/sessao.js"></script>
+    <script src="/scripts/api.js"></script>
+    <script src="/scripts/demanda-detalhes.js"></script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+/* ==========================================================================
+   Autor exclusivo deste arquivo: Gustavo de Oliveira de Santana
+   Projeto Integrador II - PI-II-TIME-11
+
+   Estilos exclusivos da tela de Cadastro e Edicao de Demanda.
+   ========================================================================== */
+
+/* Formularios longos ficam dificeis de ler quando ocupam a tela inteira.
+   Uma largura menor mantem as linhas curtas e a leitura confortavel. */
+.pagina--estreita {
+  max-width: 780px;
+}
+
+/* --------------------------------------------------------------------------
+   CAMPO DE DATA
+
+   O seletor de data do navegador vem com aparencia clara por padrao.
+   O filtro invert deixa o icone do calendario visivel sobre o fundo escuro.
+   -------------------------------------------------------------------------- */
+.campo--data {
+  /* Deixa o campo com a mesma altura dos demais em todos os navegadores. */
+  min-height: 45px;
+}
+
+.campo--data::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.6);
+  cursor: pointer;
+}
+
+.campo--data::-webkit-calendar-picker-indicator:hover {
+  filter: invert(1) opacity(1);
+}
+
+/* --------------------------------------------------------------------------
+   AVISO DA CONSULTA DE FERIADOS
+
+   Aparece abaixo do campo de data enquanto a API externa e consultada e
+   depois que a resposta chega.
+   -------------------------------------------------------------------------- */
+.formulario__aviso-feriado {
+  font-size: var(--texto-pequeno);
+  margin-top: var(--espaco-1);
+
+  /* Fica escondido ate haver algo a informar. */
+  display: none;
+}
+
+.formulario__aviso-feriado--visivel {
+  display: block;
+}
+
+.formulario__aviso-feriado--consultando {
+  color: var(--texto-secundario);
+}
+
+.formulario__aviso-feriado--livre {
+  color: var(--cor-sucesso);
+}
+
+.formulario__aviso-feriado--feriado {
+  color: var(--cor-erro);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   BOTOES DO FIM DO FORMULARIO
+   -------------------------------------------------------------------------- */
+.formulario__acoes {
+  display: flex;
+  gap: var(--espaco-3);
+  flex-wrap: wrap;
+
+  margin-top: var(--espaco-5);
+  padding-top: var(--espaco-4);
+  border-top: 1px solid var(--borda);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVIDADE
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  /* No celular os botoes ficam um sobre o outro e ocupam a largura toda,
+     ficando mais faceis de tocar com o dedo. */
+  .formulario__acoes {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,423 @@
+/* ==========================================================================
+   Autor exclusivo deste arquivo: Enzo Carleti Teixeira
+   Projeto Integrador II - PI-II-TIME-11
+
+   Componentes visuais reaproveitados pelas cinco telas: botoes, campos de
+   formulario, cards, tabelas, etiquetas de status e mensagens.
+
+   Escrever esses componentes uma unica vez garante que um botao tenha a
+   mesma aparencia em todas as telas do sistema.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BOTOES
+   -------------------------------------------------------------------------- */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-2);
+
+  padding: 10px var(--espaco-4);
+  border: 1px solid transparent;
+  border-radius: var(--canto-pequeno);
+
+  font-family: var(--fonte);
+  font-size: var(--texto-normal);
+  font-weight: 600;
+  line-height: 1.2;
+
+  cursor: pointer;
+
+  /* Suaviza a mudanca de cor ao passar o mouse. */
+  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+
+  /* Evita que o texto do botao seja selecionado por engano. */
+  user-select: none;
+}
+
+/* Botao principal: a acao mais importante da tela. */
+.botao--principal {
+  background-color: var(--cor-acao);
+  color: var(--texto-sobre-acao);
+}
+
+.botao--principal:hover {
+  background-color: var(--cor-acao-escura);
+}
+
+/* Botao secundario: acoes de apoio, como voltar ou limpar filtros. */
+.botao--secundario {
+  background-color: transparent;
+  border-color: var(--borda-clara);
+  color: var(--texto-principal);
+}
+
+.botao--secundario:hover {
+  background-color: var(--fundo-superficie-alta);
+}
+
+/* Botao de acao destrutiva ou de atencao, como cancelar a demanda. */
+.botao--perigo {
+  background-color: transparent;
+  border-color: var(--cor-erro);
+  color: var(--cor-erro);
+}
+
+.botao--perigo:hover {
+  background-color: var(--cor-erro-fundo);
+}
+
+.botao--pequeno {
+  padding: 6px var(--espaco-3);
+  font-size: var(--texto-pequeno);
+}
+
+.botao--largura-total {
+  width: 100%;
+}
+
+/* Aparencia do botao enquanto a acao esta sendo processada
+   ou quando ela nao esta disponivel. */
+.botao:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   CARDS
+   -------------------------------------------------------------------------- */
+.card {
+  background-color: var(--fundo-superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--canto-medio);
+  padding: var(--espaco-5);
+}
+
+.card__titulo {
+  font-size: var(--texto-medio);
+  font-weight: 700;
+  margin-bottom: var(--espaco-3);
+}
+
+/* --------------------------------------------------------------------------
+   FORMULARIOS
+   -------------------------------------------------------------------------- */
+.campo {
+  margin-bottom: var(--espaco-4);
+}
+
+.campo__rotulo {
+  display: block;
+  font-size: var(--texto-normal);
+  font-weight: 600;
+  margin-bottom: var(--espaco-2);
+}
+
+/* Marca visual dos campos obrigatorios. */
+.campo__obrigatorio {
+  color: var(--cor-acao);
+}
+
+.campo__entrada,
+.campo__area,
+.campo__selecao {
+  width: 100%;
+  padding: 11px var(--espaco-3);
+
+  background-color: var(--fundo-campo);
+  border: 1px solid var(--borda);
+  border-radius: var(--canto-pequeno);
+
+  color: var(--texto-principal);
+  font-family: var(--fonte);
+  font-size: var(--texto-normal);
+
+  transition: border-color 0.15s ease;
+}
+
+.campo__entrada::placeholder,
+.campo__area::placeholder {
+  color: var(--texto-apagado);
+}
+
+.campo__entrada:focus,
+.campo__area:focus,
+.campo__selecao:focus {
+  border-color: var(--cor-acao);
+  outline: none;
+}
+
+.campo__area {
+  min-height: 130px;
+
+  /* Permite esticar apenas na vertical, para nao quebrar o layout. */
+  resize: vertical;
+}
+
+/* Marca o campo que foi preenchido de forma incorreta. */
+.campo__entrada--invalido,
+.campo__area--invalido,
+.campo__selecao--invalido {
+  border-color: var(--cor-erro);
+}
+
+/* Texto de ajuda que aparece abaixo do campo. */
+.campo__ajuda {
+  font-size: var(--texto-pequeno);
+  color: var(--texto-secundario);
+  margin-top: var(--espaco-1);
+}
+
+/* Mensagem de erro especifica do campo. */
+.campo__erro {
+  font-size: var(--texto-pequeno);
+  color: var(--cor-erro);
+  margin-top: var(--espaco-1);
+
+  /* Fica escondida ate o JavaScript preencher o texto. */
+  display: none;
+}
+
+.campo__erro--visivel {
+  display: block;
+}
+
+/* Organiza campos lado a lado nas telas maiores. */
+.campo-linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-4);
+}
+
+/* --------------------------------------------------------------------------
+   ETIQUETAS DE STATUS, PRIORIDADE E TIPO
+
+   Cada etiqueta usa uma cor de fundo transparente sobre a cor do texto.
+   Alem da cor, o texto sempre aparece escrito. Isso e importante para
+   acessibilidade: quem nao distingue cores continua entendendo a
+   informacao pela palavra.
+   -------------------------------------------------------------------------- */
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Bolinha colorida que aparece antes do texto da etiqueta. */
+.etiqueta::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+/* Status */
+.etiqueta--aberta {
+  color: #6ba8ff;
+  background-color: rgba(107, 168, 255, 0.12);
+  border-color: rgba(107, 168, 255, 0.35);
+}
+
+.etiqueta--em_andamento {
+  color: var(--cor-acao);
+  background-color: var(--cor-alerta-fundo);
+  border-color: rgba(252, 163, 17, 0.35);
+}
+
+.etiqueta--em_revisao {
+  color: #c58cff;
+  background-color: rgba(197, 140, 255, 0.12);
+  border-color: rgba(197, 140, 255, 0.35);
+}
+
+.etiqueta--concluida {
+  color: var(--cor-sucesso);
+  background-color: var(--cor-sucesso-fundo);
+  border-color: rgba(47, 191, 113, 0.35);
+}
+
+.etiqueta--cancelada {
+  color: var(--texto-apagado);
+  background-color: rgba(107, 122, 146, 0.12);
+  border-color: rgba(107, 122, 146, 0.35);
+}
+
+/* Prioridade */
+.etiqueta--critica {
+  color: var(--cor-erro);
+  background-color: var(--cor-erro-fundo);
+  border-color: rgba(239, 77, 77, 0.35);
+}
+
+.etiqueta--alta {
+  color: #ff9f45;
+  background-color: rgba(255, 159, 69, 0.12);
+  border-color: rgba(255, 159, 69, 0.35);
+}
+
+.etiqueta--media {
+  color: #f2d16b;
+  background-color: rgba(242, 209, 107, 0.12);
+  border-color: rgba(242, 209, 107, 0.35);
+}
+
+.etiqueta--baixa {
+  color: var(--texto-secundario);
+  background-color: rgba(159, 173, 196, 0.12);
+  border-color: rgba(159, 173, 196, 0.3);
+}
+
+/* Tipo da demanda: aparencia neutra, sem bolinha colorida. */
+.etiqueta--tipo {
+  color: var(--texto-secundario);
+  background-color: transparent;
+  border-color: var(--borda-clara);
+}
+
+.etiqueta--tipo::before {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   TABELAS
+   -------------------------------------------------------------------------- */
+
+/* A tabela fica dentro deste container. Em telas estreitas o container
+   ganha barra de rolagem horizontal, e a pagina inteira nao desloca. */
+.tabela-area {
+  overflow-x: auto;
+  border: 1px solid var(--borda);
+  border-radius: var(--canto-medio);
+  background-color: var(--fundo-superficie);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.tabela thead th {
+  text-align: left;
+  padding: var(--espaco-3) var(--espaco-4);
+
+  background-color: var(--fundo-superficie-alta);
+  border-bottom: 1px solid var(--borda);
+
+  font-size: var(--texto-pequeno);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--texto-secundario);
+  white-space: nowrap;
+}
+
+.tabela tbody td {
+  padding: var(--espaco-3) var(--espaco-4);
+  border-bottom: 1px solid var(--borda);
+  vertical-align: middle;
+}
+
+.tabela tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabela tbody tr:hover {
+  background-color: rgba(20, 33, 61, 0.55);
+}
+
+.tabela__titulo-demanda {
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+.tabela__titulo-demanda:hover {
+  color: var(--cor-acao);
+}
+
+.tabela__secundario {
+  color: var(--texto-secundario);
+  font-size: var(--texto-pequeno);
+}
+
+/* --------------------------------------------------------------------------
+   MENSAGENS DE AVISO
+
+   Sao usadas para confirmar uma acao ou explicar um problema.
+   O texto sempre e escrito em linguagem simples, sem termos tecnicos.
+   -------------------------------------------------------------------------- */
+.mensagem {
+  padding: var(--espaco-3) var(--espaco-4);
+  border-radius: var(--canto-pequeno);
+  border: 1px solid transparent;
+  font-size: var(--texto-normal);
+  margin-bottom: var(--espaco-4);
+}
+
+.mensagem--erro {
+  color: var(--cor-erro);
+  background-color: var(--cor-erro-fundo);
+  border-color: rgba(239, 77, 77, 0.4);
+}
+
+.mensagem--sucesso {
+  color: var(--cor-sucesso);
+  background-color: var(--cor-sucesso-fundo);
+  border-color: rgba(47, 191, 113, 0.4);
+}
+
+.mensagem--alerta {
+  color: var(--cor-alerta);
+  background-color: var(--cor-alerta-fundo);
+  border-color: rgba(252, 163, 17, 0.4);
+}
+
+/* Estado inicial: escondida ate ter texto para mostrar. */
+.mensagem--escondida {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   ESTADOS DE CARREGAMENTO E LISTA VAZIA
+   -------------------------------------------------------------------------- */
+.aviso-vazio {
+  padding: var(--espaco-6) var(--espaco-4);
+  text-align: center;
+  color: var(--texto-secundario);
+}
+
+.aviso-vazio__titulo {
+  font-weight: 600;
+  color: var(--texto-principal);
+  margin-bottom: var(--espaco-1);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVIDADE DOS COMPONENTES
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  /* Campos lado a lado passam a ocupar uma linha cada. */
+  .campo-linha {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .card {
+    padding: var(--espaco-4);
+  }
+
+  /* No celular os botoes ocupam a largura toda, ficando mais faceis de tocar. */
+  .botao--empilha-no-celular {
+    width: 100%;
+  }
+}

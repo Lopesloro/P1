@@ -1,0 +1,186 @@
+<!--
+  Autor exclusivo deste arquivo: Gustavo de Oliveira de Santana
+  Projeto Integrador II - PI-II-TIME-11
+
+  Tela de Cadastro e Edicao de Demanda.
+
+  A mesma tela atende aos dois casos:
+  - sem parametro no endereco, ela cadastra uma demanda nova;
+  - com ?id=NUMERO no endereco, ela carrega a demanda e permite editar.
+
+  Aproveitar a mesma tela evita manter dois formularios quase iguais,
+  que precisariam ser corrigidos em dobro a cada alteracao.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Cadastro de Demanda | Acompanhamento de Demandas</title>
+
+    <!-- Icone da aba do navegador -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="stylesheet" href="/estilos/base.css" />
+    <link rel="stylesheet" href="/estilos/componentes.css" />
+    <link rel="stylesheet" href="/estilos/formulario.css" />
+  </head>
+
+  <body>
+    <div id="cabecalho"></div>
+
+    <main class="pagina pagina--estreita">
+      <div class="pagina__topo">
+        <div>
+          <h1 class="pagina__titulo" id="tituloDaTela">Nova demanda</h1>
+          <p class="pagina__subtitulo" id="subtituloDaTela">
+            Preencha os dados abaixo para cadastrar uma demanda.
+          </p>
+        </div>
+
+        <a class="botao botao--secundario" href="/paginas/demandas.html">Voltar</a>
+      </div>
+
+      <div
+        id="areaDeMensagem"
+        class="mensagem mensagem--erro mensagem--escondida"
+        role="alert"
+      ></div>
+
+      <section class="card">
+        <form id="formularioDaDemanda" novalidate>
+          <!-- Titulo -->
+          <div class="campo">
+            <label class="campo__rotulo" for="titulo">
+              Titulo <span class="campo__obrigatorio">*</span>
+            </label>
+            <input
+              class="campo__entrada"
+              type="text"
+              id="titulo"
+              maxlength="150"
+              placeholder="Resuma a demanda em uma frase"
+            />
+            <p class="campo__ajuda">Maximo de 150 caracteres.</p>
+            <p class="campo__erro" id="erroTitulo"></p>
+          </div>
+
+          <!-- Descricao -->
+          <div class="campo">
+            <label class="campo__rotulo" for="descricao">
+              Descricao <span class="campo__obrigatorio">*</span>
+            </label>
+            <textarea
+              class="campo__area"
+              id="descricao"
+              maxlength="5000"
+              placeholder="Explique o que precisa ser feito, o que esta acontecendo ou o que deve ser corrigido"
+            ></textarea>
+            <p class="campo__erro" id="erroDescricao"></p>
+          </div>
+
+          <!-- Projeto e Tipo -->
+          <div class="campo-linha">
+            <div class="campo">
+              <label class="campo__rotulo" for="projeto">
+                Projeto <span class="campo__obrigatorio">*</span>
+              </label>
+              <select class="campo__selecao" id="projeto">
+                <option value="">Selecione o projeto</option>
+              </select>
+              <p class="campo__ajuda" id="ajudaProjeto">
+                O projeto nao pode ser alterado depois do cadastro.
+              </p>
+              <p class="campo__erro" id="erroProjeto"></p>
+            </div>
+
+            <div class="campo">
+              <label class="campo__rotulo" for="tipo">
+                Tipo <span class="campo__obrigatorio">*</span>
+              </label>
+              <select class="campo__selecao" id="tipo">
+                <option value="TAREFA">Tarefa</option>
+                <option value="DEFEITO">Defeito</option>
+                <option value="MELHORIA">Melhoria</option>
+                <option value="DOCUMENTACAO">Documentacao</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Prioridade e Responsavel -->
+          <div class="campo-linha">
+            <div class="campo">
+              <label class="campo__rotulo" for="prioridade">
+                Prioridade <span class="campo__obrigatorio">*</span>
+              </label>
+              <select class="campo__selecao" id="prioridade">
+                <option value="BAIXA">Baixa</option>
+                <option value="MEDIA">Media</option>
+                <option value="ALTA">Alta</option>
+                <option value="CRITICA">Critica</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label class="campo__rotulo" for="responsavel">Responsavel</label>
+              <select class="campo__selecao" id="responsavel">
+                <option value="">Sem responsavel definido</option>
+              </select>
+              <p class="campo__ajuda">
+                Pode ficar em branco e ser atribuido depois.
+              </p>
+            </div>
+          </div>
+
+          <!-- Prazo de finalizacao -->
+          <div class="campo">
+            <label class="campo__rotulo" for="prazo">Prazo de finalizacao</label>
+            <input class="campo__entrada campo--data" type="date" id="prazo" />
+            <p class="campo__ajuda">
+              A data e conferida em uma lista oficial de feriados nacionais.
+              Prazos que caem em feriado nao sao aceitos.
+            </p>
+
+            <!-- Aviso preenchido pela consulta a API de feriados -->
+            <p class="campo__erro" id="erroPrazo"></p>
+            <p class="formulario__aviso-feriado" id="avisoFeriado"></p>
+          </div>
+
+          <!-- Status: mostrado apenas na edicao, somente para leitura -->
+          <div class="campo" id="areaDoStatus" hidden>
+            <label class="campo__rotulo">Status atual</label>
+            <div id="statusAtual"></div>
+            <p class="campo__ajuda">
+              O status e alterado pela tela de detalhes da demanda, onde as
+              regras do fluxo de trabalho sao aplicadas.
+            </p>
+          </div>
+
+          <div class="formulario__acoes">
+            <button
+              type="submit"
+              class="botao botao--principal botao--empilha-no-celular"
+              id="botaoSalvar"
+            >
+              Cadastrar demanda
+            </button>
+
+            <a
+              class="botao botao--secundario botao--empilha-no-celular"
+              href="/paginas/demandas.html"
+              id="botaoCancelar"
+            >
+              Cancelar
+            </a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script src="/scripts/formatacao.js"></script>
+    <script src="/scripts/sessao.js"></script>
+    <script src="/scripts/api.js"></script>
+    <script src="/scripts/demanda-formulario.js"></script>
+  </body>
+</html>

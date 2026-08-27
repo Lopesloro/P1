@@ -1,0 +1,369 @@
+/* ==========================================================================
+   Autor exclusivo deste arquivo: Jose Gabriel Bedani
+   Projeto Integrador II - PI-II-TIME-11
+
+   Padrao visual do grupo: cores, tipografia, espacamentos e a estrutura
+   de pagina usada por todas as telas.
+
+   Este arquivo define as variaveis de cor e tamanho. As telas nunca
+   escrevem um codigo de cor direto: elas usam as variaveis daqui.
+   Assim, para mudar a aparencia do sistema inteiro, basta alterar
+   este arquivo.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   PALETA DE CORES
+
+   A paleta foi definida pelo grupo com cinco cores base:
+
+     #000000  preto      fundo da aplicacao
+     #14213D  azul       superficies: cards, cabecalho, campos
+     #FCA311  laranja    cor de acao e destaque
+     #E5E5E5  cinza      textos secundarios
+     #FFFFFF  branco     textos principais
+
+   Alem delas, duas cores de apoio foram acrescentadas por necessidade de
+   uso: uma para mensagens de sucesso e outra para mensagens de erro.
+   Sem elas o sistema nao conseguiria diferenciar um aviso de confirmacao
+   de um aviso de problema.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Cores base da paleta */
+  --cor-preto: #000000;
+  --cor-azul-escuro: #14213d;
+  --cor-laranja: #fca311;
+  --cor-cinza-claro: #e5e5e5;
+  --cor-branco: #ffffff;
+
+  /* Aplicacao das cores em cada parte da interface */
+  --fundo-pagina: var(--cor-preto);
+  --fundo-superficie: #0c1526;      /* azul escuro levemente escurecido */
+  --fundo-superficie-alta: var(--cor-azul-escuro);
+  --fundo-campo: #0a1020;
+
+  --texto-principal: var(--cor-branco);
+  --texto-secundario: #9fadc4;
+  --texto-apagado: #6b7a92;
+
+  --borda: #223354;
+  --borda-clara: #2e4270;
+
+  /* Cor de acao: botoes principais, links e itens selecionados */
+  --cor-acao: var(--cor-laranja);
+  --cor-acao-escura: #d98a0b;
+  --texto-sobre-acao: #1a1200;
+
+  /* Cores de apoio para mensagens */
+  --cor-sucesso: #2fbf71;
+  --cor-sucesso-fundo: rgba(47, 191, 113, 0.12);
+  --cor-erro: #ef4d4d;
+  --cor-erro-fundo: rgba(239, 77, 77, 0.12);
+  --cor-alerta: var(--cor-laranja);
+  --cor-alerta-fundo: rgba(252, 163, 17, 0.12);
+
+  /* Espacamentos usados em todo o sistema */
+  --espaco-1: 4px;
+  --espaco-2: 8px;
+  --espaco-3: 12px;
+  --espaco-4: 16px;
+  --espaco-5: 24px;
+  --espaco-6: 32px;
+  --espaco-7: 48px;
+
+  /* Cantos arredondados */
+  --canto-pequeno: 8px;
+  --canto-medio: 12px;
+  --canto-grande: 18px;
+
+  /* Tipografia */
+  --fonte: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --texto-pequeno: 0.8125rem;
+  --texto-normal: 0.9375rem;
+  --texto-medio: 1.0625rem;
+  --texto-grande: 1.375rem;
+  --texto-titulo: 1.75rem;
+
+  /* Largura maxima do conteudo nas telas grandes */
+  --largura-conteudo: 1180px;
+}
+
+/* --------------------------------------------------------------------------
+   REINICIO BASICO
+   Cada navegador aplica margens e tamanhos proprios. As regras abaixo
+   deixam todos os navegadores no mesmo ponto de partida.
+   -------------------------------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+
+  /* Faz a largura declarada ja incluir borda e espacamento interno.
+     Sem isso, um campo com width 100% mais padding estoura o container. */
+  box-sizing: border-box;
+}
+
+html {
+  /* Rola suavemente ate as ancoras da pagina. */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--fonte);
+  font-size: var(--texto-normal);
+  line-height: 1.55;
+  color: var(--texto-principal);
+  background-color: var(--fundo-pagina);
+
+  /* Deixa as letras mais suaves nas telas de alta resolucao. */
+  -webkit-font-smoothing: antialiased;
+
+  /* Garante que o fundo preto cubra a tela toda mesmo com pouco conteudo. */
+  min-height: 100vh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/*
+   Faz o atributo hidden do HTML realmente esconder o elemento.
+
+   Por que esta regra e necessaria:
+   o navegador ja tem uma regra propria que esconde elementos com o
+   atributo hidden. Acontece que qualquer display escrito por nos, como o
+   display: inline-flex da classe .botao, tem prioridade sobre a regra do
+   navegador. O resultado e um elemento marcado como hidden que continua
+   aparecendo na tela.
+
+   Esse problema foi encontrado durante os testes: o botao "Nova demanda"
+   aparecia para o perfil Membro da Equipe, que nao pode cadastrar
+   demandas. A regra abaixo garante que hidden funcione em todos os casos.
+
+   O !important e usado aqui de proposito, porque esta regra precisa
+   vencer o display de qualquer classe do elemento.
+*/
+[hidden] {
+  display: none !important;
+}
+
+a {
+  color: var(--cor-acao);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Contorno visivel ao navegar pelo teclado, com a tecla Tab.
+   Isso e importante para acessibilidade: quem nao usa mouse precisa
+   enxergar onde esta. */
+:focus-visible {
+  outline: 2px solid var(--cor-acao);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   CABECALHO E NAVEGACAO
+   Montado pelo arquivo scripts/sessao.js em todas as telas internas.
+   -------------------------------------------------------------------------- */
+.cabecalho {
+  background-color: var(--fundo-superficie);
+  border-bottom: 1px solid var(--borda);
+
+  /* Mantem o cabecalho visivel enquanto a pagina rola. */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.cabecalho__interno {
+  max-width: var(--largura-conteudo);
+  margin: 0 auto;
+  padding: var(--espaco-3) var(--espaco-5);
+
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-5);
+  flex-wrap: wrap;
+}
+
+.cabecalho__marca {
+  font-size: var(--texto-medio);
+  font-weight: 700;
+  color: var(--texto-principal);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.cabecalho__marca span {
+  color: var(--cor-acao);
+}
+
+.cabecalho__navegacao {
+  display: flex;
+  gap: var(--espaco-2);
+
+  /* Empurra o bloco do usuario para a direita. */
+  margin-right: auto;
+}
+
+.cabecalho__link {
+  padding: var(--espaco-2) var(--espaco-3);
+  border-radius: var(--canto-pequeno);
+  color: var(--texto-secundario);
+  font-weight: 600;
+  font-size: var(--texto-normal);
+}
+
+.cabecalho__link:hover {
+  background-color: var(--fundo-superficie-alta);
+  color: var(--texto-principal);
+  text-decoration: none;
+}
+
+/* Marca em qual tela o usuario esta. */
+.cabecalho__link--ativo {
+  background-color: var(--fundo-superficie-alta);
+  color: var(--cor-acao);
+}
+
+.cabecalho__usuario {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+}
+
+.cabecalho__usuario-dados {
+  text-align: right;
+  line-height: 1.25;
+}
+
+.cabecalho__usuario-nome {
+  font-weight: 600;
+  font-size: var(--texto-normal);
+}
+
+.cabecalho__usuario-perfil {
+  font-size: var(--texto-pequeno);
+  color: var(--texto-secundario);
+}
+
+/* Circulo com a primeira letra do nome do usuario. */
+.cabecalho__inicial {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+
+  background-color: var(--cor-acao);
+  color: var(--texto-sobre-acao);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+  font-size: var(--texto-normal);
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   ESTRUTURA DA PAGINA
+   -------------------------------------------------------------------------- */
+.pagina {
+  max-width: var(--largura-conteudo);
+  margin: 0 auto;
+  padding: var(--espaco-6) var(--espaco-5) var(--espaco-7);
+}
+
+.pagina__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espaco-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--espaco-5);
+}
+
+.pagina__titulo {
+  font-size: var(--texto-titulo);
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.pagina__subtitulo {
+  color: var(--texto-secundario);
+  font-size: var(--texto-normal);
+  margin-top: var(--espaco-1);
+}
+
+/* --------------------------------------------------------------------------
+   TITULOS DE SECAO
+   -------------------------------------------------------------------------- */
+.secao {
+  margin-top: var(--espaco-6);
+}
+
+.secao__titulo {
+  font-size: var(--texto-medio);
+  font-weight: 700;
+  margin-bottom: var(--espaco-3);
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVIDADE
+
+   O sistema foi construido para funcionar em computador, tablet e celular.
+   As regras abaixo ajustam o cabecalho e os espacamentos nas telas menores.
+   -------------------------------------------------------------------------- */
+
+/* Tablets */
+@media (max-width: 900px) {
+  .pagina {
+    padding: var(--espaco-5) var(--espaco-4) var(--espaco-6);
+  }
+
+  .pagina__titulo {
+    font-size: var(--texto-grande);
+  }
+}
+
+/* Celulares */
+@media (max-width: 640px) {
+  .cabecalho__interno {
+    padding: var(--espaco-3) var(--espaco-4);
+    gap: var(--espaco-3);
+  }
+
+  /* No celular a navegacao ocupa uma linha inteira, abaixo da marca. */
+  .cabecalho__navegacao {
+    order: 3;
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .cabecalho__link {
+    flex: 1;
+    text-align: center;
+  }
+
+  .cabecalho__usuario {
+    margin-left: auto;
+  }
+
+  .cabecalho__usuario-dados {
+    display: none;
+  }
+
+  .pagina {
+    padding: var(--espaco-4) var(--espaco-3) var(--espaco-6);
+  }
+
+  .pagina__topo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

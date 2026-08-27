@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Autor exclusivo deste arquivo: Eduardo Martins Colmati
+   Projeto Integrador II - PI-II-TIME-11
+
+   Estilos exclusivos da tela de Login.
+   Os estilos gerais (cores, botoes e campos) vem de base.css e
+   componentes.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   ESTRUTURA DA TELA
+   O formulario fica centralizado na horizontal e na vertical.
+   -------------------------------------------------------------------------- */
+.login-corpo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Ocupa a altura toda da janela. */
+  min-height: 100vh;
+
+  padding: var(--espaco-5);
+}
+
+.login-area {
+  width: 100%;
+
+  /* Largura confortavel para leitura. Em telas menores, o 100%
+     do width acima assume e o cartao encolhe junto. */
+  max-width: 440px;
+}
+
+/* --------------------------------------------------------------------------
+   IDENTIFICACAO DO SISTEMA
+   -------------------------------------------------------------------------- */
+.login-marca {
+  text-align: center;
+  margin-bottom: var(--espaco-5);
+}
+
+.login-marca__nome {
+  font-size: var(--texto-titulo);
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.login-marca__nome span {
+  color: var(--cor-acao);
+}
+
+.login-marca__descricao {
+  color: var(--texto-secundario);
+  font-size: var(--texto-normal);
+  margin-top: var(--espaco-1);
+}
+
+/* --------------------------------------------------------------------------
+   CARTAO DO FORMULARIO
+   -------------------------------------------------------------------------- */
+.login-cartao {
+  background-color: var(--fundo-superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--canto-grande);
+  padding: var(--espaco-6);
+}
+
+/* --------------------------------------------------------------------------
+   CAMPO COM ICONE
+
+   O icone fica por cima do campo, posicionado de forma absoluta, e o
+   campo recebe um espacamento interno a esquerda para o texto nao passar
+   por baixo do desenho.
+   -------------------------------------------------------------------------- */
+.login-campo-com-icone {
+  position: relative;
+}
+
+.login-campo-com-icone__icone {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 19px;
+  height: 19px;
+  color: var(--texto-apagado);
+
+  /* Deixa o clique passar direto para o campo que esta embaixo. */
+  pointer-events: none;
+}
+
+.login-campo-com-icone__entrada {
+  /* Espaco a esquerda para o icone e a direita para o botao Mostrar. */
+  padding-left: 44px;
+  padding-right: 84px;
+  height: 50px;
+}
+
+/* Botao que revela a senha digitada. */
+.login-mostrar-senha {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  padding: 6px 8px;
+  border-radius: var(--canto-pequeno);
+
+  color: var(--texto-secundario);
+  font-family: var(--fonte);
+  font-size: var(--texto-pequeno);
+  font-weight: 600;
+}
+
+.login-mostrar-senha:hover {
+  color: var(--cor-acao);
+}
+
+/* --------------------------------------------------------------------------
+   LINHA DE OPCOES: LEMBRAR-ME E ESQUECI A SENHA
+   -------------------------------------------------------------------------- */
+.login-opcoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-3);
+  flex-wrap: wrap;
+
+  margin-bottom: var(--espaco-5);
+}
+
+.login-lembrar {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  cursor: pointer;
+  font-size: var(--texto-normal);
+  user-select: none;
+}
+
+.login-lembrar input {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+
+  /* Pinta a marca de selecao com a cor de acao do sistema. */
+  accent-color: var(--cor-acao);
+}
+
+.login-esqueci {
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  color: var(--texto-secundario);
+  font-family: var(--fonte);
+  font-size: var(--texto-normal);
+  font-weight: 600;
+  padding: 0;
+}
+
+.login-esqueci:hover {
+  color: var(--cor-acao);
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   BOTAO DE ENTRAR
+   -------------------------------------------------------------------------- */
+.login-botao-entrar {
+  height: 50px;
+  font-size: var(--texto-medio);
+  border-radius: var(--canto-pequeno);
+}
+
+/* --------------------------------------------------------------------------
+   RODAPE
+   -------------------------------------------------------------------------- */
+.login-rodape {
+  text-align: center;
+  margin-top: var(--espaco-5);
+  color: var(--texto-apagado);
+  font-size: var(--texto-pequeno);
+  letter-spacing: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVIDADE
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .login-corpo {
+    padding: var(--espaco-4);
+
+    /* No celular o formulario comeca mais para cima, deixando espaco
+       para o teclado que aparece ao tocar em um campo. */
+    align-items: flex-start;
+    padding-top: var(--espaco-7);
+  }
+
+  .login-cartao {
+    padding: var(--espaco-5) var(--espaco-4);
+  }
+
+  .login-marca__nome {
+    font-size: var(--texto-grande);
+  }
+}

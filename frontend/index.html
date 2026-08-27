@@ -1,0 +1,166 @@
+<!--
+  Autor exclusivo deste arquivo: Eduardo Martins Colmati
+  Projeto Integrador II - PI-II-TIME-11
+
+  Tela de Login.
+
+  E a porta de entrada do sistema. O usuario informa e-mail e senha, o
+  backend confere os dados e devolve um token, que fica guardado no
+  navegador e acompanha todas as telas seguintes.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Faz a pagina se ajustar a largura da tela do celular. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Entrar | Acompanhamento de Demandas</title>
+
+    <!-- Icone da aba do navegador -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="stylesheet" href="/estilos/base.css" />
+    <link rel="stylesheet" href="/estilos/componentes.css" />
+    <link rel="stylesheet" href="/estilos/login.css" />
+  </head>
+
+  <body class="login-corpo">
+    <main class="login-area">
+      <!-- Identificacao do sistema, acima do formulario -->
+      <div class="login-marca">
+        <h1 class="login-marca__nome">
+          Acompanhamento de <span>Demandas</span>
+        </h1>
+        <p class="login-marca__descricao">
+          Projeto Integrador II &middot; Engenharia de Software
+        </p>
+      </div>
+
+      <section class="login-cartao">
+        <!--
+          Area onde as mensagens de erro e de aviso aparecem.
+          Comeca escondida e o JavaScript a exibe quando necessario.
+        -->
+        <div
+          id="areaDeMensagem"
+          class="mensagem mensagem--erro mensagem--escondida"
+          role="alert"
+        ></div>
+
+        <!--
+          novalidate desliga as mensagens automaticas do navegador.
+          Fazemos a validacao no nosso proprio JavaScript para que os
+          textos fiquem em portugues e no mesmo padrao do resto do sistema.
+        -->
+        <form id="formularioDeLogin" novalidate>
+          <!-- Campo de e-mail -->
+          <div class="campo">
+            <label class="campo__rotulo" for="email">E-mail</label>
+
+            <div class="login-campo-com-icone">
+              <!-- Icone de envelope desenhado em SVG, sem arquivo externo -->
+              <svg
+                class="login-campo-com-icone__icone"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                aria-hidden="true"
+              >
+                <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+
+              <input
+                class="campo__entrada login-campo-com-icone__entrada"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Digite seu e-mail"
+                autocomplete="email"
+                required
+              />
+            </div>
+
+            <p class="campo__erro" id="erroEmail"></p>
+          </div>
+
+          <!-- Campo de senha -->
+          <div class="campo">
+            <label class="campo__rotulo" for="senha">Senha</label>
+
+            <div class="login-campo-com-icone">
+              <!-- Icone de cadeado -->
+              <svg
+                class="login-campo-com-icone__icone"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                aria-hidden="true"
+              >
+                <rect x="4" y="10.5" width="16" height="10.5" rx="2.5" />
+                <path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" />
+              </svg>
+
+              <input
+                class="campo__entrada login-campo-com-icone__entrada"
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Digite sua senha"
+                autocomplete="current-password"
+                required
+              />
+
+              <!-- Botao que mostra ou esconde a senha digitada -->
+              <button
+                type="button"
+                class="login-mostrar-senha"
+                id="botaoMostrarSenha"
+                aria-label="Mostrar senha"
+              >
+                Mostrar
+              </button>
+            </div>
+
+            <p class="campo__erro" id="erroSenha"></p>
+          </div>
+
+          <!-- Lembrar-me e link de ajuda -->
+          <div class="login-opcoes">
+            <label class="login-lembrar" for="lembrar">
+              <input type="checkbox" id="lembrar" name="lembrar" />
+              <span>Lembrar-me</span>
+            </label>
+
+            <button type="button" class="login-esqueci" id="botaoEsqueciSenha">
+              Esqueceu a senha?
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            class="botao botao--principal botao--largura-total login-botao-entrar"
+            id="botaoEntrar"
+          >
+            Entrar
+          </button>
+        </form>
+      </section>
+
+      <p class="login-rodape">PI-II-TIME-11</p>
+    </main>
+
+    <!--
+      A ordem dos arquivos importa: formatacao e sessao precisam existir
+      antes de api.js, e api.js precisa existir antes de login.js.
+    -->
+    <script src="/scripts/formatacao.js"></script>
+    <script src="/scripts/sessao.js"></script>
+    <script src="/scripts/api.js"></script>
+    <script src="/scripts/login.js"></script>
+  </body>
+</html>

@@ -1,0 +1,110 @@
+<!--
+  Autor exclusivo deste arquivo: Jose Gabriel Bedani
+  Projeto Integrador II - PI-II-TIME-11
+
+  Tela Inicial (Dashboard).
+
+  Apresenta um resumo das demandas: totais por status, por prioridade e
+  por tipo, alem das demandas criticas em aberto e das que estao proximas
+  do prazo de finalizacao.
+
+  Os numeros mostrados respeitam o perfil do usuario. O Administrador ve
+  o sistema inteiro; o Lider e o Membro veem apenas os projetos aos quais
+  estao vinculados.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Dashboard | Acompanhamento de Demandas</title>
+
+    <!-- Icone da aba do navegador -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="stylesheet" href="/estilos/base.css" />
+    <link rel="stylesheet" href="/estilos/componentes.css" />
+    <link rel="stylesheet" href="/estilos/dashboard.css" />
+  </head>
+
+  <body>
+    <!-- O cabecalho e montado pelo arquivo scripts/sessao.js -->
+    <div id="cabecalho"></div>
+
+    <main class="pagina">
+      <div class="pagina__topo">
+        <div>
+          <h1 class="pagina__titulo">Dashboard</h1>
+          <p class="pagina__subtitulo" id="subtituloDoDashboard">
+            Resumo das demandas cadastradas no sistema.
+          </p>
+        </div>
+
+        <a class="botao botao--secundario" href="/paginas/demandas.html">
+          Ver todas as demandas
+        </a>
+      </div>
+
+      <!-- Area de mensagem de erro, usada quando a consulta falha -->
+      <div
+        id="areaDeMensagem"
+        class="mensagem mensagem--erro mensagem--escondida"
+        role="alert"
+      ></div>
+
+      <!-- Aviso exibido enquanto os dados sao carregados -->
+      <p class="aviso-vazio" id="avisoCarregando">Carregando os dados...</p>
+
+      <!-- Todo o conteudo comeca escondido e aparece quando os dados chegam -->
+      <div id="conteudoDoDashboard" hidden>
+        <!-- ---------------------------------------------------------------
+             CARTOES COM OS TOTAIS POR STATUS
+             --------------------------------------------------------------- -->
+        <section class="secao" aria-label="Totais por status">
+          <div class="indicadores" id="areaDosIndicadores"></div>
+        </section>
+
+        <!-- ---------------------------------------------------------------
+             DISTRIBUICAO POR PRIORIDADE E POR TIPO
+             --------------------------------------------------------------- -->
+        <section class="secao">
+          <div class="dashboard-colunas">
+            <div class="card">
+              <h2 class="card__titulo">Demandas por prioridade</h2>
+              <div id="areaDePrioridades"></div>
+            </div>
+
+            <div class="card">
+              <h2 class="card__titulo">Demandas por tipo</h2>
+              <div id="areaDeTipos"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------
+             DEMANDAS CRITICAS EM ABERTO
+             --------------------------------------------------------------- -->
+        <section class="secao">
+          <h2 class="secao__titulo">Demandas criticas em aberto</h2>
+          <div class="card" id="areaDeCriticas"></div>
+        </section>
+
+        <!-- ---------------------------------------------------------------
+             DEMANDAS PROXIMAS DO PRAZO
+             --------------------------------------------------------------- -->
+        <section class="secao">
+          <h2 class="secao__titulo" id="tituloProximasDoPrazo">
+            Demandas proximas do prazo
+          </h2>
+          <div class="card" id="areaDePrazos"></div>
+        </section>
+      </div>
+    </main>
+
+    <script src="/scripts/formatacao.js"></script>
+    <script src="/scripts/sessao.js"></script>
+    <script src="/scripts/api.js"></script>
+    <script src="/scripts/dashboard.js"></script>
+  </body>
+</html>

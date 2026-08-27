@@ -1,0 +1,191 @@
+<!--
+  Autor exclusivo deste arquivo: Enzo Carleti Teixeira
+  Projeto Integrador II - PI-II-TIME-11
+
+  Tela de Listagem de Demandas.
+
+  Mostra todas as demandas que o usuario pode enxergar, com filtros,
+  busca por texto e ordenacao. A partir daqui o usuario abre os detalhes
+  de uma demanda ou cadastra uma nova.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Demandas | Acompanhamento de Demandas</title>
+
+    <!-- Icone da aba do navegador -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="stylesheet" href="/estilos/base.css" />
+    <link rel="stylesheet" href="/estilos/componentes.css" />
+    <link rel="stylesheet" href="/estilos/demandas.css" />
+  </head>
+
+  <body>
+    <div id="cabecalho"></div>
+
+    <main class="pagina">
+      <div class="pagina__topo">
+        <div>
+          <h1 class="pagina__titulo">Demandas</h1>
+          <p class="pagina__subtitulo" id="resumoDaListagem">Carregando...</p>
+        </div>
+
+        <!--
+          O botao de cadastrar so aparece para Administrador e Lider.
+          Comeca escondido e o JavaScript o exibe conforme o perfil.
+        -->
+        <a
+          class="botao botao--principal"
+          href="/paginas/demanda-formulario.html"
+          id="botaoNovaDemanda"
+          hidden
+        >
+          Nova demanda
+        </a>
+      </div>
+
+      <div
+        id="areaDeMensagem"
+        class="mensagem mensagem--erro mensagem--escondida"
+        role="alert"
+      ></div>
+
+      <!-- ------------------------------------------------------------------
+           FILTROS E BUSCA
+           ------------------------------------------------------------------ -->
+      <section class="card filtros" aria-label="Filtros da listagem">
+        <form id="formularioDeFiltros">
+          <!-- Linha da busca por texto -->
+          <div class="filtros__busca">
+            <label class="campo__rotulo" for="busca">Buscar</label>
+            <input
+              class="campo__entrada"
+              type="search"
+              id="busca"
+              name="busca"
+              placeholder="Digite parte do titulo ou da descricao"
+            />
+          </div>
+
+          <!-- Linha com as caixas de selecao -->
+          <div class="filtros__grade">
+            <div class="campo">
+              <label class="campo__rotulo" for="filtroStatus">Status</label>
+              <select class="campo__selecao" id="filtroStatus">
+                <option value="">Todos</option>
+                <option value="ABERTA">Aberta</option>
+                <option value="EM_ANDAMENTO">Em andamento</option>
+                <option value="EM_REVISAO">Em revisao</option>
+                <option value="CONCLUIDA">Concluida</option>
+                <option value="CANCELADA">Cancelada</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label class="campo__rotulo" for="filtroPrioridade">Prioridade</label>
+              <select class="campo__selecao" id="filtroPrioridade">
+                <option value="">Todas</option>
+                <option value="CRITICA">Critica</option>
+                <option value="ALTA">Alta</option>
+                <option value="MEDIA">Media</option>
+                <option value="BAIXA">Baixa</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label class="campo__rotulo" for="filtroTipo">Tipo</label>
+              <select class="campo__selecao" id="filtroTipo">
+                <option value="">Todos</option>
+                <option value="TAREFA">Tarefa</option>
+                <option value="DEFEITO">Defeito</option>
+                <option value="MELHORIA">Melhoria</option>
+                <option value="DOCUMENTACAO">Documentacao</option>
+              </select>
+            </div>
+
+            <!-- As duas listas abaixo sao preenchidas pelo JavaScript,
+                 com os dados vindos da API. -->
+            <div class="campo">
+              <label class="campo__rotulo" for="filtroProjeto">Projeto</label>
+              <select class="campo__selecao" id="filtroProjeto">
+                <option value="">Todos</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label class="campo__rotulo" for="filtroResponsavel">Responsavel</label>
+              <select class="campo__selecao" id="filtroResponsavel">
+                <option value="">Todos</option>
+                <option value="sem">Sem responsavel</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label class="campo__rotulo" for="ordenarPor">Ordenar por</label>
+              <select class="campo__selecao" id="ordenarPor">
+                <option value="prioridade">Prioridade</option>
+                <option value="prazo">Prazo de finalizacao</option>
+                <option value="criacao">Data de criacao</option>
+                <option value="status">Status</option>
+                <option value="titulo">Titulo</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="filtros__acoes">
+            <button type="submit" class="botao botao--principal botao--empilha-no-celular">
+              Aplicar filtros
+            </button>
+            <button
+              type="button"
+              class="botao botao--secundario botao--empilha-no-celular"
+              id="botaoLimparFiltros"
+            >
+              Limpar
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ------------------------------------------------------------------
+           TABELA DE RESULTADOS
+           ------------------------------------------------------------------ -->
+      <section class="secao">
+        <!-- A tabela fica dentro de uma area com rolagem horizontal,
+             para nao deslocar a pagina inteira no celular. -->
+        <div class="tabela-area">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th scope="col">Titulo</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Prioridade</th>
+                <th scope="col">Status</th>
+                <th scope="col">Projeto</th>
+                <th scope="col">Responsavel</th>
+                <th scope="col">Criacao</th>
+                <th scope="col">Prazo</th>
+              </tr>
+            </thead>
+            <tbody id="corpoDaTabela">
+              <tr>
+                <td colspan="8">
+                  <div class="aviso-vazio">Carregando as demandas...</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="/scripts/formatacao.js"></script>
+    <script src="/scripts/sessao.js"></script>
+    <script src="/scripts/api.js"></script>
+    <script src="/scripts/demandas.js"></script>
+  </body>
+</html>

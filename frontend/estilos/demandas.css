@@ -1,0 +1,77 @@
+/* ==========================================================================
+   Autor exclusivo deste arquivo: Enzo Carleti Teixeira
+   Projeto Integrador II - PI-II-TIME-11
+
+   Estilos exclusivos da tela de Listagem de Demandas.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   AREA DE FILTROS
+   -------------------------------------------------------------------------- */
+.filtros {
+  padding: var(--espaco-4) var(--espaco-5);
+}
+
+.filtros__busca {
+  margin-bottom: var(--espaco-4);
+}
+
+/*
+   As caixas de selecao se organizam em uma grade que se ajusta sozinha.
+   O minmax garante que cada caixa tenha pelo menos 165 pixels; abaixo
+   disso o navegador quebra para a linha seguinte.
+*/
+.filtros__grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+  gap: 0 var(--espaco-4);
+}
+
+.filtros__acoes {
+  display: flex;
+  gap: var(--espaco-3);
+  flex-wrap: wrap;
+  margin-top: var(--espaco-2);
+}
+
+/* --------------------------------------------------------------------------
+   COLUNAS DA TABELA
+   -------------------------------------------------------------------------- */
+
+/* Impede que um titulo muito longo estique a tabela inteira. */
+.tabela__coluna-titulo {
+  max-width: 320px;
+  min-width: 220px;
+}
+
+.tabela__sem-responsavel {
+  color: var(--texto-apagado);
+  font-style: italic;
+}
+
+/* Aviso de prazo vencido ou proximo do vencimento. */
+.tabela__prazo-atencao {
+  display: block;
+  font-size: var(--texto-pequeno);
+  color: var(--cor-erro);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVIDADE
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .filtros {
+    padding: var(--espaco-4);
+  }
+
+  /* No celular cada filtro ocupa a linha inteira. */
+  .filtros__grade {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .filtros__acoes {
+    flex-direction: column;
+  }
+}
