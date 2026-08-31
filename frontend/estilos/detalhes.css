@@ -22,7 +22,7 @@
 }
 
 .detalhes-voltar:hover {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
   text-decoration: none;
 }
 

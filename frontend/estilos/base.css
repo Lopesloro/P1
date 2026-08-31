@@ -29,17 +29,16 @@
    -------------------------------------------------------------------------- */
 :root {
   /*
-     Avisa o navegador que o sistema usa tema escuro.
+     Avisa o navegador que o sistema usa tema claro.
 
-     Qual problema isso resolve:
-     alguns elementos sao desenhados pelo proprio navegador, e nao pelo
+     Alguns elementos sao desenhados pelo proprio navegador, e nao pelo
      nosso CSS: a caixa do "Lembrar-me", o calendario do campo de prazo,
-     a lista que abre nas caixas de selecao e as barras de rolagem. Sem
-     esta linha, o navegador os desenha claros, supondo fundo branco, e
-     eles ficavam como manchas brancas no meio das telas escuras.
-     Com color-scheme: dark, o navegador desenha todos eles em tom escuro.
+     a lista que abre nas caixas de selecao e as barras de rolagem. Esta
+     linha faz o navegador desenhar todos eles no tom certo do tema.
+     Para voltar ao tema escuro, troque light por dark aqui e nos valores
+     das variaveis abaixo.
   */
-  color-scheme: dark;
+  color-scheme: light;
 
   /* Cores base da paleta */
   --cor-preto: #000000;
@@ -49,30 +48,65 @@
   --cor-branco: #ffffff;
 
   /* Aplicacao das cores em cada parte da interface */
-  --fundo-pagina: var(--cor-preto);
-  --fundo-superficie: #0c1526;      /* azul escuro levemente escurecido */
-  --fundo-superficie-alta: var(--cor-azul-escuro);
-  --fundo-campo: #0a1020;
+  --fundo-pagina: #f4f6f9;          /* cinza bem claro, quase branco */
+  --fundo-superficie: var(--cor-branco);
+  --fundo-superficie-alta: #eaeef5; /* realce: cabecalho da tabela, hover */
+  --fundo-campo: var(--cor-branco);
 
-  --texto-principal: var(--cor-branco);
-  --texto-secundario: #9fadc4;
-  --texto-apagado: #6b7a92;
+  --texto-principal: var(--cor-azul-escuro);
+  --texto-secundario: #5b6b85;
+  --texto-apagado: #8592a8;
 
-  --borda: #223354;
-  --borda-clara: #2e4270;
+  --borda: #dbe2ec;
+  --borda-clara: #c2ccdc;
 
-  /* Cor de acao: botoes principais, links e itens selecionados */
-  --cor-acao: var(--cor-laranja);
-  --cor-acao-escura: #d98a0b;
-  --texto-sobre-acao: #1a1200;
+  /*
+     Cor de acao.
+
+     Ela aparece de duas formas, e no tema claro as duas NAO podem ser a
+     mesma cor. Como fundo de botao, o laranja da paleta funciona bem.
+     Como texto sobre o branco, o mesmo laranja fica ilegivel: o contraste
+     cai para cerca de 2 para 1, quando o minimo recomendado e 4,5 para 1.
+     Por isso existe uma segunda variavel, mais escura, usada em links e
+     em textos pequenos.
+  */
+  --cor-acao: var(--cor-laranja);        /* fundos: botoes, barras, avatar */
+  --cor-acao-escura: #e08c00;            /* fundo do botao com o mouse em cima */
+  --cor-acao-texto: #8a5800;             /* textos e links */
+  --texto-sobre-acao: #1a1200;           /* texto escrito por cima do laranja */
 
   /* Cores de apoio para mensagens */
-  --cor-sucesso: #2fbf71;
-  --cor-sucesso-fundo: rgba(47, 191, 113, 0.12);
-  --cor-erro: #ef4d4d;
-  --cor-erro-fundo: rgba(239, 77, 77, 0.12);
-  --cor-alerta: var(--cor-laranja);
-  --cor-alerta-fundo: rgba(252, 163, 17, 0.12);
+  --cor-sucesso: #1e8f52;
+  --cor-sucesso-fundo: rgba(30, 143, 82, 0.1);
+  --cor-erro: #c62d2d;
+  --cor-erro-fundo: rgba(198, 45, 45, 0.09);
+  --cor-alerta: var(--cor-acao-texto);
+  --cor-alerta-fundo: rgba(252, 163, 17, 0.16);
+
+  /*
+     Cores das etiquetas de status e de prioridade.
+
+     Antes elas ficavam escritas direto no arquivo componentes.css, o que
+     contrariava a regra deste arquivo e obrigava a mexer em dois lugares
+     para trocar o tema. Agora ficam aqui, junto com o resto da paleta.
+
+     As mesmas cores servem para as barras do dashboard e para a faixa de
+     prioridade da listagem, entao a prioridade Alta tem exatamente o mesmo
+     tom em todas as telas.
+  */
+  --cor-status-aberta: #1f6feb;
+  --cor-status-em-andamento: var(--cor-acao-texto);
+  --cor-status-em-revisao: #7c3aed;
+  --cor-status-concluida: var(--cor-sucesso);
+  --cor-status-cancelada: var(--texto-apagado);
+
+  --cor-prioridade-critica: var(--cor-erro);
+  --cor-prioridade-alta: #c2610a;
+  --cor-prioridade-media: #8a6a00;
+  --cor-prioridade-baixa: var(--texto-secundario);
+
+  /* Faixa que marca a linha da tabela sob o mouse. */
+  --realce-da-linha: rgba(20, 33, 61, 0.05);
 
   /* Espacamentos usados em todo o sistema */
   --espaco-1: 4px;
@@ -99,6 +133,7 @@
   /* Largura maxima do conteudo nas telas grandes */
   --largura-conteudo: 1180px;
 }
+
 
 /* --------------------------------------------------------------------------
    REINICIO BASICO
@@ -179,7 +214,7 @@ img {
 }
 
 a {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
   text-decoration: none;
 }
 
@@ -229,7 +264,7 @@ a:hover {
 }
 
 .cabecalho__marca span {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
 }
 
 .cabecalho__navegacao {
@@ -257,7 +292,7 @@ a:hover {
 /* Marca em qual tela o usuario esta. */
 .cabecalho__link--ativo {
   background-color: var(--fundo-superficie-alta);
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
 }
 
 .cabecalho__usuario {

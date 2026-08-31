@@ -116,7 +116,7 @@
 
 /* Marca visual dos campos obrigatorios. */
 .campo__obrigatorio {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
 }
 
 .campo__entrada,
@@ -205,11 +205,23 @@
 
   padding: 3px 10px;
   border-radius: 999px;
-  border: 1px solid transparent;
 
   font-size: var(--texto-pequeno);
   font-weight: 600;
   white-space: nowrap;
+
+  /*
+     O fundo e a borda saem da propria cor do texto, com color-mix.
+
+     currentColor e a cor de texto do elemento, definida pelas classes
+     logo abaixo. O color-mix mistura essa cor com transparente: 12% dela
+     vira o fundo suave, 35% vira a borda. Antes cada etiqueta repetia as
+     mesmas tres cores a mao, uma como texto e duas como rgba, o que dava
+     nove blocos quase iguais e tres lugares para errar a cada mudanca.
+     Agora cada etiqueta declara so a sua cor.
+  */
+  background-color: color-mix(in srgb, currentColor 12%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
 }
 
 /* Bolinha colorida que aparece antes do texto da etiqueta. */
@@ -221,61 +233,18 @@
   background-color: currentColor;
 }
 
-/* Status */
-.etiqueta--aberta {
-  color: #6ba8ff;
-  background-color: rgba(107, 168, 255, 0.12);
-  border-color: rgba(107, 168, 255, 0.35);
-}
-
-.etiqueta--em_andamento {
-  color: var(--cor-acao);
-  background-color: var(--cor-alerta-fundo);
-  border-color: rgba(252, 163, 17, 0.35);
-}
-
-.etiqueta--em_revisao {
-  color: #c58cff;
-  background-color: rgba(197, 140, 255, 0.12);
-  border-color: rgba(197, 140, 255, 0.35);
-}
-
-.etiqueta--concluida {
-  color: var(--cor-sucesso);
-  background-color: var(--cor-sucesso-fundo);
-  border-color: rgba(47, 191, 113, 0.35);
-}
-
-.etiqueta--cancelada {
-  color: var(--texto-apagado);
-  background-color: rgba(107, 122, 146, 0.12);
-  border-color: rgba(107, 122, 146, 0.35);
-}
+/* Status. As cores estao em estilos/base.css, junto com o resto da paleta. */
+.etiqueta--aberta { color: var(--cor-status-aberta); }
+.etiqueta--em_andamento { color: var(--cor-status-em-andamento); }
+.etiqueta--em_revisao { color: var(--cor-status-em-revisao); }
+.etiqueta--concluida { color: var(--cor-status-concluida); }
+.etiqueta--cancelada { color: var(--cor-status-cancelada); }
 
 /* Prioridade */
-.etiqueta--critica {
-  color: var(--cor-erro);
-  background-color: var(--cor-erro-fundo);
-  border-color: rgba(239, 77, 77, 0.35);
-}
-
-.etiqueta--alta {
-  color: #ff9f45;
-  background-color: rgba(255, 159, 69, 0.12);
-  border-color: rgba(255, 159, 69, 0.35);
-}
-
-.etiqueta--media {
-  color: #f2d16b;
-  background-color: rgba(242, 209, 107, 0.12);
-  border-color: rgba(242, 209, 107, 0.35);
-}
-
-.etiqueta--baixa {
-  color: var(--texto-secundario);
-  background-color: rgba(159, 173, 196, 0.12);
-  border-color: rgba(159, 173, 196, 0.3);
-}
+.etiqueta--critica { color: var(--cor-prioridade-critica); }
+.etiqueta--alta { color: var(--cor-prioridade-alta); }
+.etiqueta--media { color: var(--cor-prioridade-media); }
+.etiqueta--baixa { color: var(--cor-prioridade-baixa); }
 
 /* Tipo da demanda: aparencia neutra, sem bolinha colorida. */
 .etiqueta--tipo {
@@ -333,7 +302,7 @@
 }
 
 .tabela tbody tr:hover {
-  background-color: rgba(20, 33, 61, 0.55);
+  background-color: var(--realce-da-linha);
 }
 
 .tabela__titulo-demanda {
@@ -342,7 +311,7 @@
 }
 
 .tabela__titulo-demanda:hover {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
 }
 
 .tabela__secundario {
@@ -366,7 +335,7 @@
 }
 
 .tabela--linhas-clicaveis tbody tr:hover .tabela__titulo-demanda {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
 }
 
 /* Faixa colorida a esquerda da linha, na cor da prioridade da demanda.
@@ -377,15 +346,15 @@
 }
 
 .tabela tbody tr[data-prioridade='CRITICA'] td:first-child {
-  border-left-color: var(--cor-erro);
+  border-left-color: var(--cor-prioridade-critica);
 }
 
 .tabela tbody tr[data-prioridade='ALTA'] td:first-child {
-  border-left-color: #ff9f45;
+  border-left-color: var(--cor-prioridade-alta);
 }
 
 .tabela tbody tr[data-prioridade='MEDIA'] td:first-child {
-  border-left-color: #f2d16b;
+  border-left-color: var(--cor-prioridade-media);
 }
 
 /* Linhas de carregamento cinzas, exibidas enquanto a consulta acontece.
@@ -413,27 +382,26 @@
 .mensagem {
   padding: var(--espaco-3) var(--espaco-4);
   border-radius: var(--canto-pequeno);
-  border: 1px solid transparent;
   font-size: var(--texto-normal);
   margin-bottom: var(--espaco-4);
+
+  /* A borda sai da propria cor do texto, como nas etiquetas. */
+  border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
 }
 
 .mensagem--erro {
   color: var(--cor-erro);
   background-color: var(--cor-erro-fundo);
-  border-color: rgba(239, 77, 77, 0.4);
 }
 
 .mensagem--sucesso {
   color: var(--cor-sucesso);
   background-color: var(--cor-sucesso-fundo);
-  border-color: rgba(47, 191, 113, 0.4);
 }
 
 .mensagem--alerta {
   color: var(--cor-alerta);
   background-color: var(--cor-alerta-fundo);
-  border-color: rgba(252, 163, 17, 0.4);
 }
 
 /* Estado inicial: escondida ate ter texto para mostrar. */
@@ -568,15 +536,15 @@
 
   /* A faixa de prioridade passa a ser a borda esquerda do cartao inteiro. */
   .tabela tbody tr[data-prioridade='CRITICA'] {
-    border-left: 3px solid var(--cor-erro);
+    border-left: 3px solid var(--cor-prioridade-critica);
   }
 
   .tabela tbody tr[data-prioridade='ALTA'] {
-    border-left: 3px solid #ff9f45;
+    border-left: 3px solid var(--cor-prioridade-alta);
   }
 
   .tabela tbody tr[data-prioridade='MEDIA'] {
-    border-left: 3px solid #f2d16b;
+    border-left: 3px solid var(--cor-prioridade-media);
   }
 
   /* A linha de aviso, como "nenhuma demanda encontrada", nao vira cartao. */

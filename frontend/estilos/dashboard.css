@@ -57,9 +57,9 @@
 
 /* Mantem a cor da faixa lateral quando o mouse passa por cima. */
 .indicador--total:hover { border-left-color: var(--cor-acao); }
-.indicador--aberta:hover { border-left-color: #6ba8ff; }
+.indicador--aberta:hover { border-left-color: var(--cor-status-aberta); }
 .indicador--em_andamento:hover { border-left-color: var(--cor-acao); }
-.indicador--em_revisao:hover { border-left-color: #c58cff; }
+.indicador--em_revisao:hover { border-left-color: var(--cor-status-em-revisao); }
 .indicador--concluida:hover { border-left-color: var(--cor-sucesso); }
 .indicador--cancelada:hover { border-left-color: var(--texto-apagado); }
 
@@ -83,7 +83,7 @@
 
 .indicador:hover .indicador__ir,
 .indicador:focus-visible .indicador__ir {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
 }
 
 .indicador__rotulo {
@@ -106,17 +106,17 @@
   border-left-color: var(--cor-acao);
 }
 .indicador--total .indicador__valor {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
 }
 
 .indicador--aberta {
-  border-left-color: #6ba8ff;
+  border-left-color: var(--cor-status-aberta);
 }
 .indicador--em_andamento {
   border-left-color: var(--cor-acao);
 }
 .indicador--em_revisao {
-  border-left-color: #c58cff;
+  border-left-color: var(--cor-status-em-revisao);
 }
 .indicador--concluida {
   border-left-color: var(--cor-sucesso);
@@ -179,16 +179,16 @@
 
 /* Cores das barras por prioridade */
 .barra-linha__preenchimento--critica {
-  background-color: var(--cor-erro);
+  background-color: var(--cor-prioridade-critica);
 }
 .barra-linha__preenchimento--alta {
-  background-color: #ff9f45;
+  background-color: var(--cor-prioridade-alta);
 }
 .barra-linha__preenchimento--media {
-  background-color: #f2d16b;
+  background-color: var(--cor-prioridade-media);
 }
 .barra-linha__preenchimento--baixa {
-  background-color: var(--texto-secundario);
+  background-color: var(--cor-prioridade-baixa);
 }
 
 /* --------------------------------------------------------------------------
@@ -228,7 +228,7 @@
 }
 
 .lista-destaque__item:hover .lista-destaque__titulo {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
 }
 
 .lista-destaque__item:last-child {
@@ -246,7 +246,7 @@
 }
 
 .lista-destaque__titulo:hover {
-  color: var(--cor-acao);
+  color: var(--cor-acao-texto);
 }
 
 .lista-destaque__projeto {
